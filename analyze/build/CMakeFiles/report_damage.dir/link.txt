@@ -1,0 +1,1 @@
+/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names -L/opt/homebrew/opt/zlib/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/opt/bzip2/lib -L/opt/homebrew/opt/readline/lib CMakeFiles/report_damage.dir/DamageAnalyzer.cc.o CMakeFiles/report_damage.dir/SBRatioReporter.cc.o -o report_damage

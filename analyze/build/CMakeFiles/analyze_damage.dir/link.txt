@@ -1,0 +1,1 @@
+/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names -L/opt/homebrew/opt/zlib/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/opt/bzip2/lib -L/opt/homebrew/opt/readline/lib CMakeFiles/analyze_damage.dir/AnalyzeDamage.cc.o CMakeFiles/analyze_damage.dir/DamageAnalyzer.cc.o -o analyze_damage

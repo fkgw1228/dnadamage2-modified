@@ -1,0 +1,8 @@
+# DNA SB Map File
+# LET = 8.85058 +- 1.32886 keV / um
+#      Event-ID        DNA-ID     Strand-ID Nucleotide-ID   Compound/Hydrogen      Break-ID    Dose (Gy) 
+             0             2             1            19                  H4             2      0.764984
+             4             1             1             4                 H5b             2      0.764984
+             4             1             1            12                 H5b             2      0.764984
+             8             2             1            18                  H3             2      0.764984
+             9             1             1             8                  H4             2      0.764984

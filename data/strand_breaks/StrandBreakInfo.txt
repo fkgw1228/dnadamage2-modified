@@ -1,0 +1,9 @@
+# LET = 8.59799 +- 1.44241 keV / um
+#      Event-ID        DNA-ID      Chain-ID Nucleotide-ID            Compound       Atom/Molecule      Break-ID    Dose (Gy) 
+             1             1             A            10         deoxyribose                 H5b             2      0.764984
+             2             1             A             1         deoxyribose                 H5a             2      0.764984
+             2             1             B            13         deoxyribose                 H2b             2      0.764984
+             3             1             B            23         deoxyribose                  H4             2      0.764984
+             4             1             A             9         deoxyribose                  H4             2      0.764984
+             6             1             B            17         deoxyribose                 H5a             2      0.764984
+             7             1             B            19         deoxyribose                 H5a             2      0.764984
