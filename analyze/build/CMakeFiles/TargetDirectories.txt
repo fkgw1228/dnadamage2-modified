@@ -1,5 +1,0 @@
-/Users/fkgw1228/Work/NITTC/dnadamage2-modified/analyze/build/CMakeFiles/plot_damage.dir
-/Users/fkgw1228/Work/NITTC/dnadamage2-modified/analyze/build/CMakeFiles/analyze_damage.dir
-/Users/fkgw1228/Work/NITTC/dnadamage2-modified/analyze/build/CMakeFiles/report_damage.dir
-/Users/fkgw1228/Work/NITTC/dnadamage2-modified/analyze/build/CMakeFiles/edit_cache.dir
-/Users/fkgw1228/Work/NITTC/dnadamage2-modified/analyze/build/CMakeFiles/rebuild_cache.dir
