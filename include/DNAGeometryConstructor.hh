@@ -61,7 +61,7 @@ class DNAGeometryConstructor
 {
 public:
     // Constructor
-    DNAGeometryConstructor();
+    DNAGeometryConstructor() {};
     ~DNAGeometryConstructor() = default;
 
     G4LogicalVolume* CreateDNAGeometry(DNAStructure dnaStructure);

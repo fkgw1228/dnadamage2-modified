@@ -22,8 +22,8 @@ Ellipsoid::Ellipsoid(Matrix3d E_matrix, G4ThreeVector center)
     // axis directions are given by eigenvectors
     Matrix3d eigenvecs = solver.eigenvectors();
     eigenvecs.col(0).normalize();
-    eigenvecs.col(1) = (eigenvecs.col(2).cross(eigenvecs.col(0))).normalized();
     eigenvecs.col(2) = (eigenvecs.col(0).cross(eigenvecs.col(1))).normalized();
+    eigenvecs.col(1) = (eigenvecs.col(2).cross(eigenvecs.col(0))).normalized();
 
     double mxx = eigenvecs(0,0), mxy = eigenvecs(0,1), mxz = eigenvecs(0,2);
     double myx = eigenvecs(1,0), myy = eigenvecs(1,1), myz = eigenvecs(1,2);
