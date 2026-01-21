@@ -34,17 +34,12 @@
 #include "G4DNAChemistryManager.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4Ellipsoid.hh"
+#include "G4DisplacedSolid.hh"
 #include "Randomize.hh"
-#include "G4INCLGlobals.hh"
+#include "G4UnionSolid.hh"
 
 #include "DNAHandler.hh"
-
-using namespace std;
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
-
-DNAGeometryConstructor::DNAGeometryConstructor() 
-{}
+#include "GeometryHandler.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
@@ -57,23 +52,19 @@ G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(DNAStructure dnaStruc
 
     DNA dna = dnaStructure.GetDNA();
     // get DNA range
-    pair<G4ThreeVector, G4ThreeVector> dnaRange = DNAHandler::GetRange(dna);
+    std::pair<G4ThreeVector, G4ThreeVector> dnaRange = DNAHandler::GetRange(dna);
     G4ThreeVector maxVec = dnaRange.second;
     G4ThreeVector minVec = dnaRange.first;
     // DNA size
     G4double xWidth = (maxVec.x()-minVec.x());
     G4double yWidth = (maxVec.y()-minVec.y());
     G4double zWidth = (maxVec.z()-minVec.z());
-    // constant for cutting ellipsiod overlaping
-    G4double d = sqrt(xWidth*xWidth +
-                      yWidth*yWidth +
-                      zWidth*zWidth);
 
     // Envelope solid
     G4String boxNameSolid = "Sol_" + fGeometryName;
-    G4Box* boxSolid = new G4Box(boxNameSolid, d/2.0+10*angstrom,
-                                               d/2.0+10*angstrom,
-                                               d/2.0+10*angstrom);
+    G4Box* boxSolid = new G4Box(boxNameSolid, xWidth/2.0+10*angstrom,
+                                              yWidth/2.0+10*angstrom,
+                                              zWidth/2.0+10*angstrom);
     // Envelope logic
     G4String boxNameLogic = "Log_" + fGeometryName;
     G4LogicalVolume* boxLogic  = new G4LogicalVolume(boxSolid, 
@@ -81,11 +72,12 @@ G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(DNAStructure dnaStruc
                                                       boxNameLogic);
 
     // Generate a plane
-    // upper surface of the box will fit to xy plane
-    G4Box* planeBox = new G4Box("Sol_Plane_Box", d, d, d);
-    G4ThreeVector planeDownTranslation(0, 0, -d);
+    // lower surface of the box will fit to xy plane
+    G4double d = 20 * angstrom;
+    G4Box* planeBox = new G4Box("Sol_Plane_Box", d*0.5, d*0.5, d*0.5);
+    G4ThreeVector planeDownTranslation(0, 0, -d*0.5);
 
-    // apply translation to the box
+    // apply translation to the box (xy plane at z=0)
     G4DisplacedSolid* xyPlaneSolid = new G4DisplacedSolid("Sol_XY_Plane_Box",
                                                           planeBox,
                                                           nullptr,
@@ -108,14 +100,13 @@ G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(DNAStructure dnaStruc
                 // get ellipsoid and planes
                 Ellipsoid ellipsoid = dnaStructure.GetEllipsoid(chainId, nucleotideId, compoundName);
                 if (ellipsoid.IsEmpty()) continue;  // skip if ellipsoid or planes not found
-
-                G4String locationName = chainId + "_" + to_string(nucleotideId) + "_" + compoundName;
-
                 // make a solid of the ellipsoid representing the compound
                 G4ThreeVector center = ellipsoid.GetCenter();
                 G4ThreeVector semiAxisLengths = ellipsoid.GetSemiAxisLengths();
                 G4RotationMatrix* axisVectors = new G4RotationMatrix(ellipsoid.GetAxisDirections());
-                // compound ellipsoid solid
+
+                G4String locationName = chainId + "_" + std::to_string(nucleotideId) + "_" + compoundName;
+                // ellipsoid solid of the compound
                 G4Ellipsoid* SolidEllipsoid = new G4Ellipsoid("Sol_Ellipsoid_" + locationName,
                                                               semiAxisLengths.x(),
                                                               semiAxisLengths.y(),
@@ -128,56 +119,31 @@ G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(DNAStructure dnaStruc
                                                         axisVectors,                                     // rotation (pointer)
                                                         center                                           // translation
                                                         );
-                // ellipsoid which subtraction will be applied to
+                // ellipsoid to which subtraction will be applied
                 G4VSolid* finalSolid = transformedEllipsoidSolid;
 
-                vector<Plane> planes = dnaStructure.GetPlanes(chainId, nucleotideId, compoundName);
-                if (planes.empty()) continue;   // skip if no planes found
+                std::vector<Plane> planes = dnaStructure.GetPlanes(chainId, nucleotideId, compoundName);
                 size_t planeCount = 0;
 
                 for (Plane& plane : planes) {
-                    G4ThreeVector w = plane.GetW();
-                    G4double b = plane.GetB();
-                    
-                    // rotate xy plane and conform upper side of box with true plane
-                    G4ThreeVector n(0.0,0.0,1.0);                               // norm vector of xy plane
-                    G4double theta = G4INCL::Math::arcCos(n.dot(w)/(w.mag()));  // angle between the plane and xy plane
-                    // rotation matrix
-                    G4ThreeVector rotationAxis = (n.cross(w)).unit();           // cross product
-                    G4double n1 = rotationAxis.x(), n2 = rotationAxis.y(), n3 = rotationAxis.z();
-                    // Dynamically allocate rotation matrix to avoid dangling pointer
-                    G4RotationMatrix* planeRotation = new G4RotationMatrix();
-                    // Rodrigues' rotation formula
-                    planeRotation->setRows(
-                        G4ThreeVector(n1*n1*(1-cos(theta))+   cos(theta), n1*n2*(1-cos(theta))+n3*sin(theta), n1*n3*(1-cos(theta))-n2*sin(theta)),
-                        G4ThreeVector(n2*n1*(1-cos(theta))-n3*sin(theta), n2*n2*(1-cos(theta))+   cos(theta), n2*n3*(1-cos(theta))+n1*sin(theta)),
-                        G4ThreeVector(n1*n3*(1-cos(theta))+n2*sin(theta), n2*n3*(1-cos(theta))-n1*sin(theta), n3*n3*(1-cos(theta))+   cos(theta))
-                    );
-                    // translation vector to be applied to the rotated plane
-                    /*  where p is the position on xy plane and rotation matrix R and translation vector T,
-                        the plane w・x + b = 0, (Rp+T) is the positon on the plane.
-                        ∴ <w, (Rp+T)> + b = 0
-                        w・Rp equals to 0 because rotated plane (Rp) is orthogonal to w
-                        ∴ <w,T> + b = 0
-                        T = -b/|w|^2 * w  */
-                    G4double wMag2 = w.mag2();
-                    G4ThreeVector planeTranslation = -(b/wMag2) * w;
-                    
+                    //if (planeCount != 0) continue;
+                    // get rotation matrix and translation vector for the plane
+                    G4RotationMatrix* planeRotation = GeometryHandler::GetPlaneRotationMatrix(plane);
+                    G4ThreeVector planeTranslation = GeometryHandler::GetPlaneTranslationForEllipsoid(ellipsoid, plane);
                     // apply rotaion and translation to xy plane
-                    G4DisplacedSolid* planeSolid = new G4DisplacedSolid("Sol_Transformed_Plane_"+locationName+"_"+to_string(planeCount),
+                    G4DisplacedSolid* planeSolid = new G4DisplacedSolid("Sol_Transformed_Plane_"+locationName+"_"+std::to_string(planeCount),
                                                                         xyPlaneSolid,
                                                                         planeRotation,
                                                                         planeTranslation
                                                                         );
                     // subtract plane from ellipsoid 
-                    finalSolid = new G4SubtractionSolid("Sol_Cut_Ellipsoid_"+locationName+"_"+to_string(planeCount++),
+                    finalSolid = new G4SubtractionSolid("Sol_Cut_Ellipsoid_"+locationName+"_"+std::to_string(planeCount++),
                                                         finalSolid,
                                                         planeSolid, nullptr, G4ThreeVector());
                 }
                 G4LogicalVolume* logicEllipsoid = new G4LogicalVolume(finalSolid,
                                                                       water,
                                                                       "Log_Ellipsoid_" + locationName);
-
                 // place subtracted compound
                 G4Colour colour;
                 if (G4StrUtil::contains(compoundName, "deoxyribose")) colour = G4Colour::Red();
