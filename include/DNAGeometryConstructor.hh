@@ -64,7 +64,7 @@ public:
     DNAGeometryConstructor() {};
     ~DNAGeometryConstructor() = default;
 
-    G4LogicalVolume* CreateDNAGeometry(DNAStructure dnaStructure);
+    G4LogicalVolume* CreateDNAGeometry(DNAStructure dnaStructure, G4bool checkOverlaps);
 
 private:
     G4String fGeometryName = "Voxel_Straight";

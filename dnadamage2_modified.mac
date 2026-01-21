@@ -18,6 +18,7 @@
 /det/OffSetFile  data/offsets/offsets.txt
 /det/UseDNAVolumes True
 /det/NbOfDNA 1
+/det/CheckOverlaps False
 
 # World Size Settings
 /det/WorldSize 1 um

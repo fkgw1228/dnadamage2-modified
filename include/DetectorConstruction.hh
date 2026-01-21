@@ -96,6 +96,7 @@ private:
     G4UIcmdWithADoubleAndUnit* fpWorldSizeUI = nullptr;
     G4UIcmdWithADoubleAndUnit* fpEnvelopeRadiusUI = nullptr;
     G4UIcmdWithABool* fpUseDNAUI = nullptr;
+    G4UIcmdWithABool* fpCheckOverlapsUI = nullptr;
 
     // Geometry parameters
     G4double fWorldSize = 1 * um;
@@ -105,6 +106,7 @@ private:
     G4String fDNAFile = "";
     G4bool fUseDNAVolumes = false;
     std::vector<G4ThreeVector> fOffsets;
+    G4bool fCheckOverlaps = false;
 
     std::map<G4int, DNAStructure> fDNAMap;     // Placed DNA structures
 

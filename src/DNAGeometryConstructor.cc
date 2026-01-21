@@ -43,7 +43,10 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(DNAStructure dnaStructure) {
+G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(
+    DNAStructure dnaStructure,
+    G4bool checkOverlaps
+) {
     // Materials
     G4NistManager * man = G4NistManager::Instance();
     G4Material* envelopeWater = man->FindOrBuildMaterial("G4_WATER");
@@ -162,7 +165,7 @@ G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(DNAStructure dnaStruc
                                   boxLogic,        // mother volume
                                   false,            // false
                                   ellipsoidCount++, // copy number
-                                  false);           // overlap checking
+                                  checkOverlaps);           // overlap checking
             }
         }
     }

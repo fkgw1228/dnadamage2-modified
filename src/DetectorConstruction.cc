@@ -92,6 +92,7 @@ DetectorConstruction::DetectorConstruction()
 
     fpDNAFileUI   = new G4UIcmdWithAString("/det/DNAFile", this);
     fpUseDNAUI    = new G4UIcmdWithABool("/det/UseDNAVolumes", this);
+    fpCheckOverlapsUI = new G4UIcmdWithABool("/det/CheckOverlaps", this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
@@ -143,6 +144,12 @@ void DetectorConstruction::SetNewValue(G4UIcommand* command, G4String newValue)
     {
         // Set whether to use DNA volumes or not
         fUseDNAVolumes = fpUseDNAUI->GetNewBoolValue(newValue);
+    }
+
+    if (command == fpCheckOverlapsUI)
+    {
+        // Set whether to check overlaps or not
+        fCheckOverlaps = fpCheckOverlapsUI->GetNewBoolValue(newValue);
     }
 }
 
@@ -207,7 +214,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // Voxel to store DNA geometry
     G4LogicalVolume* logicStraightVoxel;
     DNAGeometryConstructor constructor = DNAGeometryConstructor();
-    logicStraightVoxel = constructor.CreateDNAGeometry(dnaStructure);
+    logicStraightVoxel = constructor.CreateDNAGeometry(dnaStructure, fCheckOverlaps);
 
     for (G4int i=1; i<=fNbOfDNA; i++) {
         if (fUseDNAVolumes)
