@@ -122,7 +122,6 @@ G4bool ScoreStrandBreaks::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     G4StepPoint* aStepPoint = aStep->GetTrack()->GetStep()->GetPreStepPoint();
     G4TouchableHandle aTouchable = aStepPoint->GetTouchableHandle();
     G4String volumeName  = aTouchable->GetVolume()->GetName();
-    G4StrUtil::to_lower(volumeName);
 
     G4bool isSugar = G4StrUtil::contains(volumeName, "deoxyribose");
     //G4bool isBase = G4StrUtil::contains(volumeName, "base");

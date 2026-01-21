@@ -15,7 +15,7 @@
 
 # DNA Settings (Before Initialize)
 /det/DNAFile  data/json/nuc-SASA.json
-/det/OffSetFile  Offsets.txt
+/det/OffSetFile  data/offsets/offsets.txt
 /det/UseDNAVolumes True
 /det/NbOfDNA 1
 
