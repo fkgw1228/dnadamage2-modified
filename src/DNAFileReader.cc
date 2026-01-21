@@ -182,8 +182,8 @@ Ellipsoid DNAFileReader::GenerateEllipsoid(const json& ellipsoidInfo) {
 
     // convert to matrix using Eigen
     Eigen::Matrix3d mat;
-    mat << E_matrix[0][0], E_matrix[0][1], E_matrix[0][2],
-           E_matrix[0][1], E_matrix[1][1], E_matrix[1][2],
+    mat << E_matrix[0][0], E_matrix[1][0], E_matrix[2][0],
+           E_matrix[0][1], E_matrix[1][1], E_matrix[2][1],
            E_matrix[0][2], E_matrix[1][2], E_matrix[2][2];
     
     // center of the ellipsoid

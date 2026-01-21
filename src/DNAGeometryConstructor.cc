@@ -99,41 +99,44 @@ G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(
                 // get compound info
                 G4String compoundName = compoundPair.first;
                 Compound compound = compoundPair.second;
-
+                
                 // get ellipsoid and planes
                 Ellipsoid ellipsoid = dnaStructure.GetEllipsoid(chainId, nucleotideId, compoundName);
                 if (ellipsoid.IsEmpty()) continue;  // skip if ellipsoid or planes not found
                 // make a solid of the ellipsoid representing the compound
                 G4ThreeVector center = ellipsoid.GetCenter();
                 G4ThreeVector semiAxisLengths = ellipsoid.GetSemiAxisLengths();
-                G4RotationMatrix* axisVectors = new G4RotationMatrix(ellipsoid.GetAxisDirections());
+                G4RotationMatrix axisDirections = ellipsoid.GetAxisDirections();
 
                 G4String locationName = chainId + "_" + std::to_string(nucleotideId) + "_" + compoundName;
-                // ellipsoid solid of the compound
+                // ellipsoid solid of the compound (at origin, aligned with axes)
                 G4Ellipsoid* SolidEllipsoid = new G4Ellipsoid("Sol_Ellipsoid_" + locationName,
                                                               semiAxisLengths.x(),
                                                               semiAxisLengths.y(),
                                                               semiAxisLengths.z()
                                                               );
-                // apply rotation and translation to the ellipsoid
+                // First, apply only rotation to the ellipsoid (centered at origin)
+                G4RotationMatrix* axisVectors = new G4RotationMatrix(axisDirections);
                 G4DisplacedSolid* transformedEllipsoidSolid = 
                                     new G4DisplacedSolid("Sol_Transformed_Ellipsoid_" + locationName,    // Name of the solid
                                                         SolidEllipsoid,                                  // ellipsoid solid      
                                                         axisVectors,                                     // rotation (pointer)
                                                         center                                           // translation
                                                         );
-                // ellipsoid to which subtraction will be applied
+
+                // ellipsoid to which subtraction will be applied (still at origin)
                 G4VSolid* finalSolid = transformedEllipsoidSolid;
 
                 std::vector<Plane> planes = dnaStructure.GetPlanes(chainId, nucleotideId, compoundName);
                 size_t planeCount = 0;
 
+                //if (nucleotideId != 174) continue;
                 for (Plane& plane : planes) {
-                    //if (planeCount != 0) continue;
                     // get rotation matrix and translation vector for the plane
                     G4RotationMatrix* planeRotation = GeometryHandler::GetPlaneRotationMatrix(plane);
                     G4ThreeVector planeTranslation = GeometryHandler::GetPlaneTranslationForEllipsoid(ellipsoid, plane);
-                    // apply rotaion and translation to xy plane
+                    
+                    // apply rotation and translation to xy plane
                     G4DisplacedSolid* planeSolid = new G4DisplacedSolid("Sol_Transformed_Plane_"+locationName+"_"+std::to_string(planeCount),
                                                                         xyPlaneSolid,
                                                                         planeRotation,
@@ -158,14 +161,15 @@ G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(
 
                 G4String ellipsoidName = "Phy_Ellipsoid_" + locationName;
 
-                new G4PVPlacement(0,                // rotation
-                                  G4ThreeVector(),  // translation
+                // Place the ellipsoid at its final position (center)
+                new G4PVPlacement(0,                // rotation (already applied in DisplacedSolid)
+                                  G4ThreeVector(),           // translation to final position
                                   logicEllipsoid,   // logical volume
                                   ellipsoidName,    // name
-                                  boxLogic,        // mother volume
+                                  boxLogic,         // mother volume
                                   false,            // false
                                   ellipsoidCount++, // copy number
-                                  checkOverlaps);           // overlap checking
+                                  checkOverlaps);   // overlap checking
             }
         }
     }
