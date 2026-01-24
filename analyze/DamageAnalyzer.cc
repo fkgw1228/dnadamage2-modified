@@ -1,4 +1,6 @@
 #include "DamageAnalyzer.hh"
+#include <iomanip>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
