@@ -28,7 +28,7 @@
 
 # Energy setting
 /fpGun/setEnergy 2.5 keV
-/fpGun/setPosition -10. 0. 0. angstrom
+/fpGun/setPosition -30. 0. 0. angstrom
 /fpGun/setDirection 1 0 0
 
 # Number of primaries per event 
