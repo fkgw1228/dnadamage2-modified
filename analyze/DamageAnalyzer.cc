@@ -183,7 +183,7 @@ void DamageAnalyzer::PrintResults() {
     std::cout << std::setw(35) << "Indirect SSBs: "                       << "   " << fIndirectSSBs             << std::endl;
     std::cout << std::setw(35) << "Total DSBs: "                          << "   " << fTotalDSBs                << std::endl;
     std::cout << std::setw(35) << "Indirect to Total Damage Ratio:(%) "   << "   " << fIndirectToTotalRatio*100 << std::endl;
-    std::cout << std::setw(35) << "SSB to DSB Ratio(%): "                 << "   " << fSSBToDSBRatio*100        << std::endl;
+    std::cout << std::setw(35) << "SSB to DSB Ratio: "                    << "   " << fSSBToDSBRatio            << std::endl;
 }
 
 void DamageAnalyzer::NoResult() {
