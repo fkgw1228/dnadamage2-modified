@@ -33,8 +33,8 @@
 // We would be very happy hearing from you, send us your feedback! :)
 //
 // In order for Geant4-DNA to be maintained and still open-source,
-// article citations are crucial. 
-// If you use Geant4-DNA chemistry and you publish papers about your software, 
+// article citations are crucial.
+// If you use Geant4-DNA chemistry and you publish papers about your software,
 // in addition to the general paper on Geant4-DNA:
 //
 // Int. J. Model. Simul. Sci. Comput. 1 (2010) 157–178
@@ -46,7 +46,7 @@
 //      J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
 // J. Comput. Phys. 274 (2014) 841-882
-// Prog. Nucl. Sci. Tec. 2 (2011) 503-508 
+// Prog. Nucl. Sci. Tec. 2 (2011) 503-508
 //
 /// \file PlasmidMolecules.hh
 /// \brief Definition of the additional Plasmid DNA molecules
@@ -54,21 +54,21 @@
 #ifndef DNADAMAGE2_DNAMolecules_h
 #define DNADAMAGE2_DNAMolecules_h 1
 
-#include "globals.hh"
-#include "G4ios.hh"
-#include "G4ParticleDefinition.hh"
 #include "G4MoleculeDefinition.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4ios.hh"
+#include "globals.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4DNADeoxyriboseH1 : public G4MoleculeDefinition
 {
-private:
+  private:
     static /*G4ThreadLocal*/ G4DNADeoxyriboseH1* theInstance;
     G4DNADeoxyriboseH1() {}
     ~G4DNADeoxyriboseH1() override = default;
 
-public:
+  public:
     static G4DNADeoxyriboseH1* Definition();
 };
 
@@ -76,12 +76,12 @@ public:
 
 class G4DNADeoxyriboseH2a : public G4MoleculeDefinition
 {
-private:
+  private:
     static /*G4ThreadLocal*/ G4DNADeoxyriboseH2a* theInstance;
     G4DNADeoxyriboseH2a() {}
     ~G4DNADeoxyriboseH2a() override = default;
 
-public:
+  public:
     static G4DNADeoxyriboseH2a* Definition();
 };
 
@@ -89,12 +89,12 @@ public:
 
 class G4DNADeoxyriboseH2b : public G4MoleculeDefinition
 {
-private:
+  private:
     static /*G4ThreadLocal*/ G4DNADeoxyriboseH2b* theInstance;
     G4DNADeoxyriboseH2b() {}
     ~G4DNADeoxyriboseH2b() override = default;
 
-public:
+  public:
     static G4DNADeoxyriboseH2b* Definition();
 };
 
@@ -102,12 +102,12 @@ public:
 
 class G4DNADeoxyriboseH3 : public G4MoleculeDefinition
 {
-private:
+  private:
     static /*G4ThreadLocal*/ G4DNADeoxyriboseH3* theInstance;
     G4DNADeoxyriboseH3() {}
     ~G4DNADeoxyriboseH3() override = default;
 
-public:
+  public:
     static G4DNADeoxyriboseH3* Definition();
 };
 
@@ -115,12 +115,12 @@ public:
 
 class G4DNADeoxyriboseH4 : public G4MoleculeDefinition
 {
-private:
+  private:
     static /*G4ThreadLocal*/ G4DNADeoxyriboseH4* theInstance;
     G4DNADeoxyriboseH4() {}
     ~G4DNADeoxyriboseH4() override = default;
 
-public:
+  public:
     static G4DNADeoxyriboseH4* Definition();
 };
 
@@ -128,12 +128,12 @@ public:
 
 class G4DNADeoxyriboseH5a : public G4MoleculeDefinition
 {
-private:
+  private:
     static /*G4ThreadLocal*/ G4DNADeoxyriboseH5a* theInstance;
     G4DNADeoxyriboseH5a() {}
     ~G4DNADeoxyriboseH5a() override = default;
 
-public:
+  public:
     static G4DNADeoxyriboseH5a* Definition();
 };
 
@@ -141,157 +141,131 @@ public:
 
 class G4DNADeoxyriboseH5b : public G4MoleculeDefinition
 {
-private:
+  private:
     static /*G4ThreadLocal*/ G4DNADeoxyriboseH5b* theInstance;
     G4DNADeoxyriboseH5b() {}
     ~G4DNADeoxyriboseH5b() override = default;
 
-public:
+  public:
     static G4DNADeoxyriboseH5b* Definition();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class G4DNADeoxyribose : public G4MoleculeDefinition
+class G4DNAHistone : public G4MoleculeDefinition
 {
-private:
-  static /*G4ThreadLocal*/ G4DNADeoxyribose* fDeoxyriboseInstance;
-  G4DNADeoxyribose() {}
-  ~G4DNADeoxyribose() override  = default;
+  private:
+    static /*G4ThreadLocal*/ G4DNAHistone* fHistoneInstance;
+    G4DNAHistone() {}
+    ~G4DNAHistone() override = default;
 
-public:
-  static G4DNADeoxyribose* Definition();
+  public:
+    static G4DNAHistone* Definition();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class G4DNADamagedDeoxyriboseOH : public G4MoleculeDefinition
-{
-private:
-  static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseOH* fDamagedDeoxyriboseOHInstance;
-  G4DNADamagedDeoxyriboseOH() {}
-  ~G4DNADamagedDeoxyriboseOH() override = default;
+// class G4DNADamagedDeoxyriboseOH : public G4MoleculeDefinition
+// {
+// private:
+//     static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseOH* fDamagedDeoxyriboseOHInstance;
+//     G4DNADamagedDeoxyriboseOH() {}
+//     ~G4DNADamagedDeoxyriboseOH() override = default;
 
-public:
-  static G4DNADamagedDeoxyriboseOH* Definition();
-};
+// public:
+//     static G4DNADamagedDeoxyriboseOH* Definition();
+// };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4DNADamagedDeoxyriboseH1OH : public G4MoleculeDefinition
 {
-private:
-  static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH1OH* fDamagedDeoxyriboseH1OHInstance;
-  G4DNADamagedDeoxyriboseH1OH() {}
-  ~G4DNADamagedDeoxyriboseH1OH() override = default;
+  private:
+    static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH1OH* fDamagedDeoxyriboseH1OHInstance;
+    G4DNADamagedDeoxyriboseH1OH() {}
+    ~G4DNADamagedDeoxyriboseH1OH() override = default;
 
-public:
-  static G4DNADamagedDeoxyriboseH1OH* Definition();
+  public:
+    static G4DNADamagedDeoxyriboseH1OH* Definition();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4DNADamagedDeoxyriboseH2aOH : public G4MoleculeDefinition
 {
-private:
-  static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH2aOH* fDamagedDeoxyriboseH2aOHInstance;
-  G4DNADamagedDeoxyriboseH2aOH() {}
-  ~G4DNADamagedDeoxyriboseH2aOH() override = default;
+  private:
+    static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH2aOH* fDamagedDeoxyriboseH2aOHInstance;
+    G4DNADamagedDeoxyriboseH2aOH() {}
+    ~G4DNADamagedDeoxyriboseH2aOH() override = default;
 
-public:
-  static G4DNADamagedDeoxyriboseH2aOH* Definition();
+  public:
+    static G4DNADamagedDeoxyriboseH2aOH* Definition();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4DNADamagedDeoxyriboseH2bOH : public G4MoleculeDefinition
 {
-private:
-  static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH2bOH* fDamagedDeoxyriboseH2bOHInstance;
-  G4DNADamagedDeoxyriboseH2bOH() {}
-  ~G4DNADamagedDeoxyriboseH2bOH() override = default;
+  private:
+    static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH2bOH* fDamagedDeoxyriboseH2bOHInstance;
+    G4DNADamagedDeoxyriboseH2bOH() {}
+    ~G4DNADamagedDeoxyriboseH2bOH() override = default;
 
-public:
-  static G4DNADamagedDeoxyriboseH2bOH* Definition();
+  public:
+    static G4DNADamagedDeoxyriboseH2bOH* Definition();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4DNADamagedDeoxyriboseH3OH : public G4MoleculeDefinition
 {
-private:
-  static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH3OH* fDamagedDeoxyriboseH3OHInstance;
-  G4DNADamagedDeoxyriboseH3OH() {}
-  ~G4DNADamagedDeoxyriboseH3OH() override = default;
+  private:
+    static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH3OH* fDamagedDeoxyriboseH3OHInstance;
+    G4DNADamagedDeoxyriboseH3OH() {}
+    ~G4DNADamagedDeoxyriboseH3OH() override = default;
 
-public:
-  static G4DNADamagedDeoxyriboseH3OH* Definition();
+  public:
+    static G4DNADamagedDeoxyriboseH3OH* Definition();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4DNADamagedDeoxyriboseH4OH : public G4MoleculeDefinition
 {
-private:
-  static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH4OH* fDamagedDeoxyriboseH4OHInstance;
-  G4DNADamagedDeoxyriboseH4OH() {}
-  ~G4DNADamagedDeoxyriboseH4OH() override = default;
+  private:
+    static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH4OH* fDamagedDeoxyriboseH4OHInstance;
+    G4DNADamagedDeoxyriboseH4OH() {}
+    ~G4DNADamagedDeoxyriboseH4OH() override = default;
 
-public:
-  static G4DNADamagedDeoxyriboseH4OH* Definition();
+  public:
+    static G4DNADamagedDeoxyriboseH4OH* Definition();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4DNADamagedDeoxyriboseH5aOH : public G4MoleculeDefinition
 {
-private:
-  static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH5aOH* fDamagedDeoxyriboseH5aOHInstance;
-  G4DNADamagedDeoxyriboseH5aOH() {}
-  ~G4DNADamagedDeoxyriboseH5aOH() override = default;
+  private:
+    static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH5aOH* fDamagedDeoxyriboseH5aOHInstance;
+    G4DNADamagedDeoxyriboseH5aOH() {}
+    ~G4DNADamagedDeoxyriboseH5aOH() override = default;
 
-public:
-  static G4DNADamagedDeoxyriboseH5aOH* Definition();
+  public:
+    static G4DNADamagedDeoxyriboseH5aOH* Definition();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4DNADamagedDeoxyriboseH5bOH : public G4MoleculeDefinition
 {
-private:
-  static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH5bOH* fDamagedDeoxyriboseH5bOHInstance;
-  G4DNADamagedDeoxyriboseH5bOH() {}
-  ~G4DNADamagedDeoxyriboseH5bOH() override = default;
+  private:
+    static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH5bOH* fDamagedDeoxyriboseH5bOHInstance;
+    G4DNADamagedDeoxyriboseH5bOH() {}
+    ~G4DNADamagedDeoxyriboseH5bOH() override = default;
 
-public:
-  static G4DNADamagedDeoxyriboseH5bOH* Definition();
+  public:
+    static G4DNADamagedDeoxyriboseH5bOH* Definition();
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-// class G4DNADamagedDeoxyriboseH : public G4MoleculeDefinition
-// {
-// private:
-//   static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseH* fDamagedDeoxyriboseHInstance;
-//   G4DNADamagedDeoxyriboseH() {}
-//   ~G4DNADamagedDeoxyriboseH() override  = default;
-
-// public:
-//   static G4DNADamagedDeoxyriboseH* Definition();
-// };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-// class G4DNADamagedDeoxyriboseEAQ : public G4MoleculeDefinition
-// {
-// private:
-//   static /*G4ThreadLocal*/ G4DNADamagedDeoxyriboseEAQ* fDamagedDeoxyriboseEAQInstance;
-//   G4DNADamagedDeoxyriboseEAQ() {}
-//   ~G4DNADamagedDeoxyriboseEAQ() override  = default;
-
-// public:
-//   static G4DNADamagedDeoxyriboseEAQ* Definition();
-// };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

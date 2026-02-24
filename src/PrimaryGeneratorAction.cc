@@ -38,48 +38,51 @@
 
 #include "PrimaryGeneratorAction.hh"
 
+#include "G4AffineTransform.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4ParticleDefinition.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4SystemOfUnits.hh"
-
-#include "G4VoxelLimits.hh"
-#include "G4VSolid.hh"
-#include "G4LogicalVolumeStore.hh"
-
-#include "G4AffineTransform.hh"
-
 #include "G4RandomTools.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4VSolid.hh"
+#include "G4VoxelLimits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-PrimaryGeneratorAction::PrimaryGeneratorAction()
- : G4VUserPrimaryGeneratorAction(),
-   fpParticleGun(0)
+PrimaryGeneratorAction::PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAction(), fpParticleGun(0)
 {
   G4int n_particle = 1;
-  fpParticleGun  = new G4ParticleGun(n_particle);
+  fpParticleGun = new G4ParticleGun(n_particle);
 
   // default particle kinematic
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4ParticleDefinition* particle=
-  particleTable->FindParticle("e-");
+  G4ParticleDefinition* particle = particleTable->FindParticle("e-");
   fpParticleGun->SetParticleDefinition(particle);
-  fpParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,0.));
-  fpParticleGun->SetParticleEnergy(100*keV);
-  fpParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+  fpParticleGun->SetParticlePosition(G4ThreeVector(0., 0., 0.));
+  fpParticleGun->SetParticleEnergy(100 * keV);
+  fpParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
 
-  fpParticleNumUI = new G4UIcmdWithAnInteger("/fpGun/PrimariesPerEvent", this);
+  fpParticleNumUI = new G4UIcmdWithAnInteger("/fpGun/setPrimariesPerEvent", this);
   fpParticleNumUI->SetGuidance("Number of primary particles per event.");
 
   fpParticleEnergyUI = new G4UIcmdWithADoubleAndUnit("/fpGun/setEnergy", this);
   fpParticleEnergyUI->SetGuidance("Initial energy of primary particles");
 
+  fpIrradiationTypeUI = new G4UIcmdWithAString("/fpGun/setIrradiationType", this);
+  fpIrradiationTypeUI->SetGuidance("Set irradiation type (fixed or spherical)");
+
+  fpSphereRadiusUI = new G4UIcmdWithADoubleAndUnit("/fpGun/setSphereRadius", this);
+  fpSphereRadiusUI->SetGuidance(
+    "Set radius of spherical irradiation volume (used only if irradiation type is spherical)");
+
   fpParticlePosUI = new G4UIcmdWith3VectorAndUnit("/fpGun/setPosition", this);
-  fpParticlePosUI->SetGuidance("Initial position of primary particles");
+  fpParticlePosUI->SetGuidance(
+    "Initial position of primary particles (used only if irradiation type is fixed)");
 
   fpParticleDirUI = new G4UIcmdWith3Vector("/fpGun/setDirection", this);
-  fpParticleDirUI->SetGuidance("Initial direction of primary particles");
+  fpParticleDirUI->SetGuidance(
+    "Initial direction of primary particles (used only if irradiation type is fixed)");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
@@ -87,6 +90,9 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
   delete fpParticleNumUI;
+  delete fpParticleEnergyUI;
+  delete fpIrradiationTypeUI;
+  delete fpSphereRadiusUI;
   delete fpParticlePosUI;
   delete fpParticleDirUI;
   delete fpParticleGun;
@@ -96,7 +102,16 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  for(G4int i = 0; i < fParticleNum; i++) {
+  for (G4int i = 0; i < fParticleNum; i++)
+  {
+    if (fIrradiationType == "spherical")
+    {
+      // random position on sphere
+      G4ThreeVector dir = G4RandomDirection();
+      fParticlePosition = dir * fSphereRadius;
+      // random direction toward center
+      fParticleDirection = (-dir + G4RandomDirection() * 0.1).unit();
+    }
     fpParticleGun->SetParticleMomentumDirection(fParticleDirection);
     fpParticleGun->SetParticlePosition(fParticlePosition);
     fpParticleGun->SetParticleEnergy(fParticleEnergy);
@@ -106,22 +121,32 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void PrimaryGeneratorAction::SetNewValue(G4UIcommand * command,
-                                G4String newValue)
+void PrimaryGeneratorAction::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-  if(command == fpParticleNumUI) {
+  if (command == fpParticleNumUI)
+  {
     fParticleNum = fpParticleNumUI->GetNewIntValue(newValue);
   }
-  if(command == fpParticleEnergyUI) {
+  if (command == fpParticleEnergyUI)
+  {
     fParticleEnergy = fpParticleEnergyUI->GetNewDoubleValue(newValue);
   }
-  if(command == fpParticlePosUI) {
+  if (command == fpIrradiationTypeUI)
+  {
+    fIrradiationType = newValue;
+  }
+  if (command == fpSphereRadiusUI)
+  {
+    fSphereRadius = fpSphereRadiusUI->GetNewDoubleValue(newValue);
+  }
+  if (command == fpParticlePosUI)
+  {
     fParticlePosition = fpParticlePosUI->GetNew3VectorValue(newValue);
   }
-  if(command == fpParticleDirUI) {
+  if (command == fpParticleDirUI)
+  {
     fParticleDirection = fpParticleDirUI->GetNew3VectorValue(newValue).unit();
   }
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

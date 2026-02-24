@@ -43,77 +43,88 @@
 /// \brief Implementation of the Run class
 
 #include "Run.hh"
-#include "RunAction.hh"
 
-#include "G4RunManager.hh"
 #include "G4Event.hh"
-#include "G4SDManager.hh"
 #include "G4HCofThisEvent.hh"
-#include "G4THitsMap.hh"
+#include "G4RunManager.hh"
+#include "G4SDManager.hh"
+#include "G4Scheduler.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4THitsMap.hh"
 #include "G4VSensitiveDetector.hh"
 
+#include "RunAction.hh"
+#include "ScoreSpecies.hh"
+#include "TimeStepAction.hh"
+
+#include <iterator>
 #include <map>
 
-#include "ScoreSpecies.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-Run::Run(): G4Run()
-{
-  G4MultiFunctionalDetector* mfdet =  dynamic_cast<G4MultiFunctionalDetector*>
-    (G4SDManager::GetSDMpointer()->FindSensitiveDetector("mfDetector"));
-  G4int CollectionIDspecies =
-    G4SDManager::GetSDMpointer()->GetCollectionID("mfDetector/Species");
-  G4int CollectionIDLET =
-    G4SDManager::GetSDMpointer()->GetCollectionID("mfDetector/LET");
+Run::Run() : G4Run() {
+  G4MultiFunctionalDetector *mfdet = dynamic_cast<G4MultiFunctionalDetector *>(
+      G4SDManager::GetSDMpointer()->FindSensitiveDetector("mfDetector"));
+  fCollectionIDSpecies =
+      G4SDManager::GetSDMpointer()->GetCollectionID("mfDetector/Species");
+  fCollectionIDLET =
+      G4SDManager::GetSDMpointer()->GetCollectionID("mfDetector/LET");
   G4int CollectionSB =
-    G4SDManager::GetSDMpointer()->GetCollectionID("mfDetector/StrandBreaks");
+      G4SDManager::GetSDMpointer()->GetCollectionID("mfDetector/StrandBreaks");
 
-  fTotalLET       = new G4THitsMap<G4double>("mfDetector","LET");
-  fScorerRun      = mfdet->GetPrimitive(CollectionIDspecies);
-  fLETScorerRun   = mfdet->GetPrimitive(CollectionIDLET);
+  fTotalLET = new G4THitsMap<G4double>("mfDetector", "LET");
+  fScorerRun = mfdet->GetPrimitive(fCollectionIDSpecies);
+  fLETScorerRun = mfdet->GetPrimitive(fCollectionIDLET);
   fStrandBreakRun = mfdet->GetPrimitive(CollectionSB);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void Run::RecordEvent(const G4Event* event)
-{
-  if(event->IsAborted()) return;
+void Run::RecordEvent(const G4Event *event) {
+  if (event->IsAborted())
+    return;
 
-  G4int CollectionID =
-    G4SDManager::GetSDMpointer()->GetCollectionID("mfDetector/Species");
-
-  G4int CollectionIDLET =
-    G4SDManager::GetSDMpointer()->GetCollectionID("mfDetector/LET");
-
-  //Hits collections
+  // Hits collections
   //
-  G4HCofThisEvent* HCE = event->GetHCofThisEvent();
-  if(!HCE) return;
+  G4HCofThisEvent *HCE = event->GetHCofThisEvent();
+  if (!HCE)
+    return;
 
-  G4THitsMap<G4double>* evtMap =
-  static_cast<G4THitsMap<G4double>*>(HCE->GetHC(CollectionID));
+  G4THitsMap<G4double> *evtMap =
+      static_cast<G4THitsMap<G4double> *>(HCE->GetHC(fCollectionIDSpecies));
 
-  G4THitsMap<G4double>* evtLET =
-  static_cast<G4THitsMap<G4double>*> (HCE->GetHC(CollectionIDLET));
+  G4THitsMap<G4double> *evtLET =
+      static_cast<G4THitsMap<G4double> *>(HCE->GetHC(fCollectionIDLET));
 
   G4int nOfMap = evtLET->entries();
 
   G4int nOftotal = fTotalLET->entries();
 
-  for (G4int i=0; i<nOfMap; i++){
-    G4double* LET = (*evtLET)[i];
-    if(!LET) continue;
-    fTotalLET->add(nOftotal+i, *LET);
+  for (G4int i = 0; i < nOfMap; i++) {
+    G4double *LET = (*evtLET)[i];
+    if (!LET)
+      continue;
+    fTotalLET->add(nOftotal + i, *LET);
   }
 
-  std::map<G4int,G4double*>::iterator itr;
+  std::map<G4int, G4double *>::iterator itr;
 
-  for (itr = evtMap->GetMap()->begin(); 
-       itr != evtMap->GetMap()->end(); itr++){
+  for (itr = evtMap->GetMap()->begin(); itr != evtMap->GetMap()->end(); itr++) {
     G4double edep = *(itr->second);
-    fSumEne+=edep;
+    fSumEne += edep;
+  }
+
+  // Collect species records from TimeStepAction at end of each event
+  if (G4Scheduler::Instance() != nullptr) {
+    TimeStepAction *timeStepAction = dynamic_cast<TimeStepAction *>(
+        G4Scheduler::Instance()->GetUserTimeStepAction());
+    if (timeStepAction) {
+      std::vector<SpeciesRecord> records = timeStepAction->GetSpeciesRecords();
+      for (const auto &record : records) {
+        fSpeciesRecords.push_back(record);
+      }
+      timeStepAction->ClearSpeciesRecords(); // Clear after collecting
+    }
   }
 
   G4Run::RecordEvent(event);
@@ -121,38 +132,42 @@ void Run::RecordEvent(const G4Event* event)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void Run::Merge(const G4Run* aRun)
-{
-  if(aRun == this){
+void Run::Merge(const G4Run *aRun) {
+  if (aRun == this) {
     return;
   }
 
-  const Run* localRun = static_cast<const Run*>(aRun);
+  const Run *localRun = static_cast<const Run *>(aRun);
   fSumEne += localRun->fSumEne;
 
   G4int nOfMaster = fTotalLET->entries();
   G4int nOfLocal = localRun->fTotalLET->entries();
-  for(G4int i=0;i<nOfLocal;i++){
-    G4double* LET = (*localRun->fTotalLET)[i];
-    if(!LET) continue;
-    fTotalLET->add(nOfMaster+i,*LET);
+  for (G4int i = 0; i < nOfLocal; i++) {
+    G4double *LET = (*localRun->fTotalLET)[i];
+    if (!LET)
+      continue;
+    fTotalLET->add(nOfMaster + i, *LET);
   }
 
-  ScoreSpecies* masterSpeciesScorer =
-  dynamic_cast<ScoreSpecies*>(this->fScorerRun);
+  ScoreSpecies *masterSpeciesScorer =
+      dynamic_cast<ScoreSpecies *>(this->fScorerRun);
 
-  ScoreSpecies* localSpeciesScorer =
-  dynamic_cast<ScoreSpecies*>(localRun->fScorerRun);
+  ScoreSpecies *localSpeciesScorer =
+      dynamic_cast<ScoreSpecies *>(localRun->fScorerRun);
 
   masterSpeciesScorer->AbsorbResultsFromWorkerScorer(localSpeciesScorer);
 
-  ScoreStrandBreaks* masterSBScorer =
-  dynamic_cast<ScoreStrandBreaks*>(this->fStrandBreakRun);
+  ScoreStrandBreaks *masterSBScorer =
+      dynamic_cast<ScoreStrandBreaks *>(this->fStrandBreakRun);
 
-  ScoreStrandBreaks* localSBScorer =
-  dynamic_cast<ScoreStrandBreaks*>(localRun->fStrandBreakRun);
+  ScoreStrandBreaks *localSBScorer =
+      dynamic_cast<ScoreStrandBreaks *>(localRun->fStrandBreakRun);
 
   masterSBScorer->AbsorbResultsFromWorkerScorer(localSBScorer);
+
+  for (const auto &record : localRun->fSpeciesRecords) {
+    this->fSpeciesRecords.push_back(record);
+  }
 
   G4Run::Merge(aRun);
 }

@@ -55,9 +55,10 @@ file(GLOB dnadamage2_SCRIPTS
   ${PROJECT_SOURCE_DIR}/*.in
   ${PROJECT_SOURCE_DIR}/*.mac
   ${PROJECT_SOURCE_DIR}/*.txt
+  ${PROJECT_SOURCE_DIR}/*.C
   )
 file(COPY ${CMAKE_SOURCE_DIR}/data DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY ${CMAKE_SOURCE_DIR}/analyze DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/analysis DESTINATION ${CMAKE_BINARY_DIR})
 
 foreach(_script ${dnadamage2_SCRIPTS})
   configure_file(

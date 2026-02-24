@@ -1,20 +1,22 @@
 #ifndef GeometryHandler_HH
 #define GeometryHandler_HH
 
-#include <utility>
-#include "Plane.hh"
-#include "Ellipsoid.hh"
 #include "G4RotationMatrix.hh"
+
+#include "Ellipsoid.hh"
+#include "Plane.hh"
+
+#include <utility>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class GeometryHandler
 {
-public:
+  public:
     static G4RotationMatrix* GetPlaneRotationMatrix(Plane plane);
     static G4ThreeVector GetPlaneTranslationForEllipsoid(Ellipsoid ellipsoid, Plane plane);
 
-private:
+  private:
     GeometryHandler() = delete;  // Prevent instantiation of this class
 };
 

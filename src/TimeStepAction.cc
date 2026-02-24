@@ -45,68 +45,106 @@
 ///  Filtering of molecules by material at the beggining of the chemical stage
 
 #include "TimeStepAction.hh"
+
+#include "G4EventManager.hh"
+#include "G4Molecule.hh"
+#include "G4MoleculeCounter.hh"
+#include "G4RunManager.hh"
 #include "G4Scheduler.hh"
-#include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4Track.hh"
-#include "G4Molecule.hh"
+#include "G4UnitsTable.hh"
+
+#include "DNAHandler.hh"
+#include "DetectorConstruction.hh"
+#include "Model.hh"
+#include "PhysicsList.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-TimeStepAction::TimeStepAction() : G4UserTimeStepAction()
-{
-}
+TimeStepAction::TimeStepAction() : G4UserTimeStepAction() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-TimeStepAction::TimeStepAction(const TimeStepAction& other) :
-        G4UserTimeStepAction(other)
-{
-}
+TimeStepAction::TimeStepAction(const TimeStepAction& other) : G4UserTimeStepAction(other) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-TimeStepAction&
-TimeStepAction::operator=(const TimeStepAction& rhs)
+TimeStepAction& TimeStepAction::operator=(const TimeStepAction& rhs)
 {
-  if (this == &rhs) return *this; // handle self assignment
-  //assignment operator
+  if (this == &rhs) return *this;  // handle self assignment
+  // assignment operator
   return *this;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
+
 void TimeStepAction::UserPreTimeStepAction()
 {
-    G4int Steps = G4Scheduler::Instance()->GetNbSteps();
+  G4int numSteps = G4Scheduler::Instance()->GetNbSteps();
+  G4int eventID = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
+  // G4MoleculeCounter::Instance()->CheckTimeForConsistency(false);
 
-    if (Steps == 0) {
-        G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
-        G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
-        G4ManyFastLists<G4Track>::iterator it_end   = trackList->end();
+  G4TrackManyList* trackList = G4ITTrackHolder::Instance()->GetMainList();
+  G4ManyFastLists<G4Track>::iterator it_begin = trackList->begin();
+  G4ManyFastLists<G4Track>::iterator it_end = trackList->end();
 
-        for(;it_begin!=it_end;++it_begin) {
-            G4String Material = it_begin->GetStep()->
-                         GetPreStepPoint()->GetMaterial()->GetName();
-            G4String MoleculeName = GetMolecule(*it_begin)->GetName();
-            if (Material != "G4_WATER" && !G4StrUtil::contains(MoleculeName,"DNA")) {
-                it_begin->SetTrackStatus(fStopAndKill);
-            }
-        }
+  for (; it_begin != it_end; it_begin++)
+  {
+    if (numSteps == 0)
+    {
+      auto material = (*it_begin)->GetMaterial();
+      G4String moleculeName = GetMolecule(*it_begin)->GetName();
+      // remove non-DNA molecules inside DNA and histone volumes at the first step
+      if (material->GetName() != "G4_WATER"
+          && !(G4StrUtil::contains(moleculeName, "DNA_Deoxyribose")
+               || G4StrUtil::contains(moleculeName, "DNA_Histone")))
+      {
+        (*it_begin)->SetTrackStatus(fStopAndKill);
+        continue;
+      }
     }
+
+    if (fCollectSpeciesData)
+    {
+      G4String moleculeName = GetMolecule(*it_begin)->GetName();
+      G4ThreeVector position = it_begin->GetPosition();
+
+      if (position.x() < -kXRange || position.x() > kXRange || position.y() < -kYRange
+          || position.y() > kYRange || position.z() < -kZRange || position.z() > kZRange)
+      {
+        continue;  // skip if the molecule is outside of range around DNA
+      }
+      G4bool isDNAMolecule = G4StrUtil::contains(moleculeName, "DNA_Deoxyribose")
+                             || G4StrUtil::contains(moleculeName, "DNA_Histone");
+      // get DNA molecules only at the first step
+      if (!((isDNAMolecule && eventID == 0 && numSteps == 0) || !isDNAMolecule))
+      {
+        continue;
+      }
+
+      SpeciesRecord record = {eventID, it_begin->GetTrackID(), moleculeName,
+                              it_begin->GetGlobalTime() / picosecond, position / angstrom};
+      // avoid duplicate entries
+      if (find(fSpeciesRecords.begin(), fSpeciesRecords.end(), record) != fSpeciesRecords.end())
+        continue;
+      fSpeciesRecords.push_back(record);
+    }
+    else
+    {
+      break;
+    }
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void TimeStepAction::UserPostTimeStepAction()
-{
-}
+void TimeStepAction::UserPostTimeStepAction() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void TimeStepAction::UserReactionAction(const G4Track& /*trackA*/,
-    const G4Track& /*trackB*/,
-    const std::vector<G4Track*>* /*products*/)
-{
-}
+void TimeStepAction::UserReactionAction(const G4Track& /*trackA*/, const G4Track& /*trackB*/,
+                                        const std::vector<G4Track*>* /*products*/)
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

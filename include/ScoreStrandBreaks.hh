@@ -42,51 +42,50 @@
 #ifndef DNADAMAGE2_ScoreSB_h
 #define DNADAMAGE2_ScoreSB_h 1
 
-#include "G4VPrimitiveScorer.hh"
-
-#include <map>
-#include <vector>
+#include "G4DNAIRT.hh"
 #include "G4THitsMap.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
-#include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
 #include "G4UImessenger.hh"
-#include "G4DNAIRT.hh"
+#include "G4VPrimitiveScorer.hh"
+
+#include "Atom.hh"
 #include "DetectorConstruction.hh"
 #include "MoleculeInserter.hh"
 
-#include "Atom.hh"
+#include <map>
+#include <vector>
 
 class G4VAnalysisManager;
 class G4MolecularConfiguration;
 
-struct DNALocation
+struct DNARecordKey
 {
     G4int eventID;
-    G4int dnaID;
+    G4int modelID;
     G4String chainID;
-    G4int nucleotideID;
+    G4int residueID;
     G4String compoundName;
 
-    bool operator<(const DNALocation& other) const
+    bool operator<(const DNARecordKey& other) const
     {
-        if (eventID != other.eventID) return eventID < other.eventID;
-        if (dnaID != other.dnaID) return dnaID < other.dnaID;
-        if (chainID != other.chainID) return chainID < other.chainID;
-        if (nucleotideID != other.nucleotideID) return nucleotideID < other.nucleotideID;
-        return compoundName < other.compoundName;
+      if (eventID != other.eventID) return eventID < other.eventID;
+      if (modelID != other.modelID) return modelID < other.modelID;
+      if (chainID != other.chainID) return chainID < other.chainID;
+      if (residueID != other.residueID) return residueID < other.residueID;
+      return compoundName < other.compoundName;
     }
 };
 
-typedef std::map<DNALocation, std::vector<G4String>> DNADamageMap;
+typedef std::map<DNARecordKey, std::vector<G4String>> DNADamageMap;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class ScoreStrandBreaks : public G4VPrimitiveScorer,
-                          public G4UImessenger
+class ScoreStrandBreaks : public G4VPrimitiveScorer, public G4UImessenger
 {
-public:
-    ScoreStrandBreaks(G4String name,DetectorConstruction*,G4double*);
+  public:
+    ScoreStrandBreaks(G4String name, DetectorConstruction*, G4double);
     ~ScoreStrandBreaks() override;
 
     void Initialize(G4HCofThisEvent*) override;
@@ -96,23 +95,23 @@ public:
     void PrintAll() override;
     void SetNewValue(G4UIcommand*, G4String) override;
 
-    void AbsorbResultsFromWorkerScorer(G4VPrimitiveScorer* );
+    void AbsorbResultsFromWorkerScorer(G4VPrimitiveScorer*);
     void Clear();
     void OutputAndClear(G4double, G4double);
-    void WriteWithAnalysisManager(G4VAnalysisManager*);
+    void WriteWithAnalysisManager(G4VAnalysisManager*, G4double, G4double);
     void ASCII(G4double, G4double);
-    
-private:
-    G4int     fNbOfEvents = 0;
-    G4bool    fDNAInserted = false;
-    G4double  fBreakEnergy = 17.5 * eV;
-    G4double  fEnergyDeposit = 0;
-    G4double* fRadius = nullptr;
+
+  private:
+    G4int fNbOfEvents = 0;
+    G4bool fDNAInserted = false;
+    G4double fBreakEnergy = 17.5 * eV;
+    G4double fEnergyDeposit = 0;
+    G4double fEnvelopeDiameter = 0;
 
     G4String fOutputName = "DirectDamageInfo";
     G4String fOutputType = "ascii";
-    DNADamageMap  fDirectDamageMap;
-    DNADamageMap  fIndirectDamageMap;
+    DNADamageMap fDirectDamageMap;
+    DNADamageMap fIndirectDamageMap;
 
     G4UIcmdWithAString* fpOutputFileUI = nullptr;
     G4UIcmdWithAString* fpOutputTypeUI = nullptr;
@@ -123,14 +122,14 @@ private:
 
     MoleculeInserter* fpGun = nullptr;
 
-    std::vector<std::pair<DNALocation, G4String>> fInsertedMolecules;
-    
-protected:
-  G4bool ProcessHits(G4Step*,G4TouchableHistory*) override;
-  G4String GetApproximateAtomName(G4int dnaId, G4String chainId, G4int nucleotideId,
-                                  G4String compoundName, G4ThreeVector position);
-  std::vector<G4String> SplitByUnderscore(const G4String &s);
-  void InsertMolecule(G4String moleculeName, DNALocation location, G4ThreeVector position);
+    std::vector<std::pair<DNARecordKey, G4String>> fInsertedMolecules;
+
+  protected:
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*) override;
+    G4String GetApproximateAtomName(G4int modelId, G4String chainId, G4int residueId,
+                                    G4String compoundName, G4ThreeVector position);
+    std::vector<G4String> SplitByUnderscore(G4String& s);
+    void InsertMolecule(G4String moleculeName, DNARecordKey location, G4ThreeVector position);
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

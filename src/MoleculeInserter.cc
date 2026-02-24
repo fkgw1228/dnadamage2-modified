@@ -33,36 +33,36 @@
 /// \brief Implementation of the DNA chemical species inserter for IRT
 
 #include "MoleculeInserter.hh"
-#include "G4MoleculeTable.hh"
-#include "G4Molecule.hh"
-#include "G4PhysicalVolumeStore.hh"
-#include "G4VPhysicalVolume.hh"
-#include <cassert>
-#include "Randomize.hh"
-#include "G4MolecularConfiguration.hh"
-#include "G4Track.hh"
-#include "G4Molecule.hh"
+
 #include "G4ITTrackHolder.hh"
+#include "G4MolecularConfiguration.hh"
+#include "G4Molecule.hh"
+#include "G4MoleculeTable.hh"
+#include "G4PhysicalVolumeStore.hh"
+#include "G4Track.hh"
+#include "G4VPhysicalVolume.hh"
+#include "Randomize.hh"
+
+#include <cassert>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-MoleculeInserter::MoleculeInserter():fSaveTrackID(false)
-{}
+MoleculeInserter::MoleculeInserter() : fSaveTrackID(false) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-MoleculeInserter::MoleculeInserter(G4bool save):fSaveTrackID(save)
-{}
+MoleculeInserter::MoleculeInserter(G4bool save) : fSaveTrackID(save) {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void MoleculeShoot::Shoot(MoleculeInserter* gun) 
+void MoleculeShoot::Shoot(MoleculeInserter* gun)
 {
-  for(int i = 0; i < fNumber; ++i) {
-    G4MolecularConfiguration* conf = 
-      G4MoleculeTable::Instance()->GetConfiguration(fMoleculeName);
+  for (int i = 0; i < fNumber; ++i)
+  {
+    G4MolecularConfiguration* conf = G4MoleculeTable::Instance()->GetConfiguration(fMoleculeName);
 
-    if (conf == 0) {
+    if (conf == 0)
+    {
       G4String msg = "Chemistry Error: Molecule " + fMoleculeName + " don't exists.";
       G4Exception("MoleculeInserter::Shoot()", "Invalid_Value", FatalException, msg);
     }
@@ -74,8 +74,7 @@ void MoleculeShoot::Shoot(MoleculeInserter* gun)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void MoleculeInserter::CreateMolecule(G4Molecule* molecule, 
-                                      G4double time, G4ThreeVector pos)
+void MoleculeInserter::CreateMolecule(G4Molecule* molecule, G4double time, G4ThreeVector pos)
 {
   G4Track* MolTrack = molecule->BuildTrack(time, pos);
   PushTrack(MolTrack);
@@ -83,16 +82,14 @@ void MoleculeInserter::CreateMolecule(G4Molecule* molecule,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void MoleculeInserter::CreateMolecule(G4String molecule,
-                                      G4double time, G4ThreeVector pos)
+void MoleculeInserter::CreateMolecule(G4String molecule, G4double time, G4ThreeVector pos)
 {
-  G4MolecularConfiguration* conf = 
-          G4MoleculeTable::Instance()->GetConfiguration(molecule);
+  G4MolecularConfiguration* conf = G4MoleculeTable::Instance()->GetConfiguration(molecule);
 
-  if (conf == 0) {
+  if (conf == 0)
+  {
     G4String msg = "Chemistry Error: Molecule " + molecule + " don't exists.";
-    G4Exception("MoleculeInserter::CreateMolecule()", 
-                "Invalid_Value", FatalException, msg);
+    G4Exception("MoleculeInserter::CreateMolecule()", "Invalid_Value", FatalException, msg);
   }
 
   G4Molecule* gmolecule = new G4Molecule(conf);
@@ -102,43 +99,46 @@ void MoleculeInserter::CreateMolecule(G4String molecule,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void MoleculeInserter::PushToChemistry(G4Molecule* mol,
-                                       G4double time, G4ThreeVector position)
+void MoleculeInserter::PushToChemistry(G4Molecule* mol, G4double time, G4ThreeVector position)
 {
   G4Track* MolTrack = mol->BuildTrack(time, position);
   PushTrack(MolTrack);
 
-  if (fSaveTrackID) {
+  if (fSaveTrackID)
+  {
     fInsertedTracks.push_back(MolTrack);
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void MoleculeInserter::DefineTracks() 
+void MoleculeInserter::DefineTracks()
 {
-  if (fInsertedTracks.size() != 0) {fInsertedTracks.clear();}
-  
-  for (size_t i = 0; i < fShoots.size(); i++) {
+  if (fInsertedTracks.size() != 0)
+  {
+    fInsertedTracks.clear();
+  }
+
+  for (size_t i = 0; i < fShoots.size(); i++)
+  {
     fShoots[i].Shoot(this);
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void MoleculeInserter::AddMolecule(const G4String& name, 
-             const G4ThreeVector& position, double time)
+void MoleculeInserter::AddMolecule(const G4String& name, const G4ThreeVector& position, double time)
 {
   MoleculeShoot shoot;
   shoot.fMoleculeName = name;
-  shoot.fPosition     = position;
-  shoot.fTime         = time;
+  shoot.fPosition = position;
+  shoot.fTime = time;
   fShoots.push_back(shoot);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-MoleculeShoot::MoleculeShoot() 
+MoleculeShoot::MoleculeShoot()
 {
   fMoleculeName = "";
   fTime = 0;
@@ -147,13 +147,11 @@ MoleculeShoot::MoleculeShoot()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void MoleculeInserter::Clean() 
+void MoleculeInserter::Clean()
 {
-  if (fShoots.size() != 0)
-    fShoots.clear();
+  if (fShoots.size() != 0) fShoots.clear();
 
-  if (fInsertedTracks.size() != 0)
-    fInsertedTracks.clear();
+  if (fInsertedTracks.size() != 0) fInsertedTracks.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

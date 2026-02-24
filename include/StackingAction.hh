@@ -19,7 +19,7 @@
 // * technical work of the GEANT4 collaboration.                      *
 // * By using,  copying,  modifying or  distributing the software (or *
 // * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your * 
+// * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
@@ -53,7 +53,7 @@
 class DetectorConstruction;
 class StackingAction : public G4UserStackingAction
 {
-public:
+  public:
     StackingAction();
     ~StackingAction() override;
 

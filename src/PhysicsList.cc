@@ -42,9 +42,8 @@
 /// \file PhysicsList.cc
 /// \brief Implementation of the PhysicsList class
 
-#include <memory>
 #include "PhysicsList.hh"
-#include "G4SystemOfUnits.hh"
+
 #include "G4EmDNAChemistry.hh"
 #include "G4EmDNAChemistry_option1.hh"
 #include "G4EmDNAChemistry_option2.hh"
@@ -59,50 +58,62 @@
 #include "G4EmDNAPhysics_option6.hh"
 #include "G4EmDNAPhysics_option7.hh"
 #include "G4EmDNAPhysics_option8.hh"
-#include "G4PhysicsConstructorRegistry.hh"
 #include "G4EmParameters.hh"
+#include "G4PhysicsConstructorRegistry.hh"
+#include "G4SystemOfUnits.hh"
+
+#include <memory>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-PhysicsList::PhysicsList()
-  : G4VModularPhysicsList()
+PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
-  G4double currentDefaultCut = 1.*nanometer;
+  G4double currentDefaultCut = 1. * nanometer;
   // fixe lower limit for cut
-  G4ProductionCutsTable::GetProductionCutsTable()->
-    SetEnergyRange(100*eV, 1*GeV);
+  G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(100 * eV, 1 * GeV);
   SetDefaultCutValue(currentDefaultCut);
   SetVerboseLevel(1);
 
   RegisterPhysicsConstructor("G4EmDNAPhysics_option2");
   RegisterChemistryConstructor("G4EmDNAChemistry_userOption");
 
-  fpPhysicsUI   = new G4UIcmdWithAString("/physics/SetPhysics", this);
+  fpPhysicsUI = new G4UIcmdWithAString("/physics/setPhysics", this);
   fpPhysicsUI->AvailableForStates(G4State_PreInit);
 
-  fpChemistryUI = new G4UIcmdWithAString("/physics/SetChemistry", this);
+  fpChemistryUI = new G4UIcmdWithAString("/physics/setChemistry", this);
   fpChemistryUI->AvailableForStates(G4State_PreInit);
 
-  fpDMSOUI   = new G4UIcmdWithADouble("/chem/scavenger/DMSO",this);
+  fpDMSOUI = new G4UIcmdWithADouble("/chem/scavenger/setDMSOMole", this);
   fpDMSOUI->AvailableForStates(G4State_PreInit);
 
-  fpOxygenUI = new G4UIcmdWithADouble("/chem/scavenger/Oxygen",this);
+  fpOxygenUI = new G4UIcmdWithADouble("/chem/scavenger/setOxygenMole", this);
   fpOxygenUI->AvailableForStates(G4State_PreInit);
+}
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+PhysicsList::~PhysicsList()
+{
+  delete fpPhysicsUI;
+  delete fpChemistryUI;
+  delete fpDMSOUI;
+  delete fpOxygenUI;
+  delete fEmDNAPhysicsList;
+  delete fEmDNAChemistryList;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void PhysicsList::ConstructParticle()
 {
-  if(fEmDNAPhysicsList != nullptr)
-  { 
+  if (fEmDNAPhysicsList != nullptr)
+  {
     fEmDNAPhysicsList->ConstructParticle();
   }
-  if(fEmDNAChemistryList != nullptr)
-    {
-      fEmDNAChemistryList->ConstructParticle();
-    }
+  if (fEmDNAChemistryList != nullptr)
+  {
+    fEmDNAChemistryList->ConstructParticle();
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -110,11 +121,11 @@ void PhysicsList::ConstructParticle()
 void PhysicsList::ConstructProcess()
 {
   AddTransportation();
-  if(fEmDNAPhysicsList != nullptr)
+  if (fEmDNAPhysicsList != nullptr)
   {
     fEmDNAPhysicsList->ConstructProcess();
   }
-  if(fEmDNAChemistryList != nullptr)
+  if (fEmDNAChemistryList != nullptr)
   {
     fEmDNAChemistryList->ConstructProcess();
   }
@@ -124,70 +135,69 @@ void PhysicsList::ConstructProcess()
 
 void PhysicsList::RegisterPhysicsConstructor(const G4String& name)
 {
-  if(name == fPhysDNAName) { return; }
-  if(verboseLevel > 0) 
+  if (name == fPhysDNAName)
   {
-    G4cout << "===== Register Physics constructor   ==== " << name << G4endl; 
+    return;
   }
-  if(name == "G4EmDNAPhysics") 
+
+  if (name == "G4EmDNAPhysics")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics(verboseLevel);
-    fPhysDNAName      = name;
-  } 
-  else if(name == "G4EmDNAPhysics_option1")
+    fPhysDNAName = name;
+  }
+  else if (name == "G4EmDNAPhysics_option1")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics_option1(verboseLevel);
     fPhysDNAName = name;
   }
-  else if(name == "G4EmDNAPhysics_option2")
+  else if (name == "G4EmDNAPhysics_option2")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics_option2(verboseLevel);
     fPhysDNAName = name;
   }
-  else if(name == "G4EmDNAPhysics_option3")
+  else if (name == "G4EmDNAPhysics_option3")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics_option3(verboseLevel);
     fPhysDNAName = name;
   }
-  else if(name == "G4EmDNAPhysics_option4")
+  else if (name == "G4EmDNAPhysics_option4")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics_option4(verboseLevel);
     fPhysDNAName = name;
   }
-  else if(name == "G4EmDNAPhysics_option5")
+  else if (name == "G4EmDNAPhysics_option5")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics_option5(verboseLevel);
     fPhysDNAName = name;
   }
-  else if(name == "G4EmDNAPhysics_option6")
+  else if (name == "G4EmDNAPhysics_option6")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics_option6(verboseLevel);
     fPhysDNAName = name;
   }
-  else if(name == "G4EmDNAPhysics_option7")
+  else if (name == "G4EmDNAPhysics_option7")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics_option7(verboseLevel);
     fPhysDNAName = name;
   }
-  else if(name == "G4EmDNAPhysics_option8")
+  else if (name == "G4EmDNAPhysics_option8")
   {
     delete fEmDNAPhysicsList;
     fEmDNAPhysicsList = new G4EmDNAPhysics_option8(verboseLevel);
     fPhysDNAName = name;
   }
-  else 
+  else
   {
     G4cout << "PhysicsList::RegisterPhysicsConstructor: <" << name << ">"
-           << " fails - name is not defined"
-           << G4endl;
+           << " fails - name is not defined" << G4endl;
   }
 }
 
@@ -195,70 +205,74 @@ void PhysicsList::RegisterPhysicsConstructor(const G4String& name)
 
 void PhysicsList::RegisterChemistryConstructor(const G4String& name)
 {
-  if(verboseLevel > 0) 
+  if (name == fChemDNAName)
   {
-    G4cout << "===== Register Chemistry constructor ==== " << name << G4endl; 
+    return;
   }
-  if(name == "G4EmDNAChemistry")
+  if (verboseLevel > 0)
+  {
+    G4cout << "===== Register Chemistry constructor ==== " << name << G4endl;
+  }
+  if (name == "G4EmDNAChemistry")
   {
     delete fEmDNAChemistryList;
     fEmDNAChemistryList = new G4EmDNAChemistry();
     fEmDNAChemistryList->SetVerboseLevel(verboseLevel);
     fChemDNAName = name;
   }
-  else if(name == "G4EmDNAChemistry_option1")
+  else if (name == "G4EmDNAChemistry_option1")
   {
     delete fEmDNAChemistryList;
     fEmDNAChemistryList = new G4EmDNAChemistry_option1();
     fEmDNAChemistryList->SetVerboseLevel(verboseLevel);
     fChemDNAName = name;
   }
-  else if(name == "G4EmDNAChemistry_option2")
+  else if (name == "G4EmDNAChemistry_option2")
   {
     delete fEmDNAChemistryList;
     fEmDNAChemistryList = new G4EmDNAChemistry_option2();
     fEmDNAChemistryList->SetVerboseLevel(verboseLevel);
     fChemDNAName = name;
   }
-  else if(name == "G4EmDNAChemistry_option3")
+  else if (name == "G4EmDNAChemistry_option3")
   {
     delete fEmDNAChemistryList;
     fEmDNAChemistryList = new G4EmDNAChemistry_option3();
     fEmDNAChemistryList->SetVerboseLevel(verboseLevel);
     fChemDNAName = name;
   }
-  else if(name == "G4EmDNAChemistry_userOption")
+  else if (name == "G4EmDNAChemistry_userOption")
   {
     delete fEmDNAChemistryList;
-    fEmDNAChemistryList = new G4EmDNAChemistryUserOption(fDMSO,fOxygen);
+    fEmDNAChemistryList = new G4EmDNAChemistryUserOption(fDMSO, fOxygen);
     fEmDNAChemistryList->SetVerboseLevel(verboseLevel);
     fChemDNAName = name;
-  } 
-  else 
+  }
+  else
   {
     G4cout << "PhysicsList::RegisterChemistryConstructor: <" << name << ">"
-           << " fails - name is not defined"
-           << G4endl;
+           << " fails - name is not defined" << G4endl;
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PhysicsList::SetNewValue(G4UIcommand * command, G4String newValue) 
+void PhysicsList::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-  if (command == fpPhysicsUI) {
+  if (command == fpPhysicsUI)
+  {
     RegisterPhysicsConstructor(newValue);
   }
-
-  if (command == fpChemistryUI) {
+  if (command == fpChemistryUI)
+  {
     RegisterChemistryConstructor(newValue);
   }
-
-  if (command == fpDMSOUI) {
+  if (command == fpDMSOUI)
+  {
     fDMSO = fpDMSOUI->GetNewDoubleValue(newValue);
   }
-
-  else if (command == fpOxygenUI) {
+  else if (command == fpOxygenUI)
+  {
     fOxygen = fpOxygenUI->GetNewDoubleValue(newValue);
   }
 }
