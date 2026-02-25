@@ -47,30 +47,29 @@
 #ifndef DNADAMAGE2_ScoreLET_h
 #define DNADAMAGE2_ScoreLET_h 1
 
-#include "G4VPrimitiveScorer.hh"
 #include "G4THitsMap.hh"
-#include "G4UImessenger.hh"
-#include "G4UIdirectory.hh"
-#include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIdirectory.hh"
+#include "G4UImessenger.hh"
+#include "G4VPrimitiveScorer.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class ScoreLET : public G4VPrimitiveScorer,
-                 public G4UImessenger
+class ScoreLET : public G4VPrimitiveScorer, public G4UImessenger
 {
-public: // with description
+  public:  // with description
     ScoreLET(G4String name);
     ~ScoreLET() override;
     void Initialize(G4HCofThisEvent*) override;
     void EndOfEvent(G4HCofThisEvent*) override;
     void OutputAndClear();
 
-    G4bool ProcessHits(G4Step*,G4TouchableHistory*) override;
+    G4bool ProcessHits(G4Step*, G4TouchableHistory*) override;
     G4int GetIndex(G4Step*) override;
     void SetNewValue(G4UIcommand*, G4String) override;
 
-private:
+  private:
     G4UIdirectory* fpLETDir = nullptr;
     G4UIcmdWithADoubleAndUnit* fpCutoff = nullptr;
 

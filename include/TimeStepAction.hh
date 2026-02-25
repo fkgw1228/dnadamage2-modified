@@ -46,28 +46,58 @@
 #ifndef DNADAMAGE2_TimeStepAction_h
 #define DNADAMAGE2_TimeStepAction_h 1
 
+#include "G4SystemOfUnits.hh"
 #include "G4UserTimeStepAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+struct SpeciesRecord
+{
+    G4int eventID;
+    G4int trackID;
+    G4String speciesName;
+    G4double time;
+    G4ThreeVector position;
+
+    bool operator==(const SpeciesRecord& other) const
+    {
+      return (eventID == other.eventID && trackID == other.trackID
+              && speciesName == other.speciesName && time == other.time);
+    }
+};
+
+typedef std::map<G4int, SpeciesRecord> SpeciesRecordPerTrackMap;
+typedef std::map<G4int, SpeciesRecordPerTrackMap> SpeciesRecordPerEventMap;
+
 class TimeStepAction : public G4UserTimeStepAction
 {
-public:
+  public:
     TimeStepAction();
     ~TimeStepAction() override = default;
     TimeStepAction(const TimeStepAction& other);
     TimeStepAction& operator=(const TimeStepAction& other);
 
+    std::vector<SpeciesRecord> GetSpeciesRecords() const { return fSpeciesRecords; }
+    void ClearSpeciesRecords() { fSpeciesRecords.clear(); }
+    void SetCollectSpeciesData(G4bool collect) { fCollectSpeciesData = collect; }
+    G4bool GetCollectSpeciesData() const { return fCollectSpeciesData; }
+
     void StartProcessing() override {}
     void UserPreTimeStepAction() override;
     void UserPostTimeStepAction() override;
 
-    void UserReactionAction(const G4Track& /*trackA*/,
-                            const G4Track& /*trackB*/,
+    void UserReactionAction(const G4Track& /*trackA*/, const G4Track& /*trackB*/,
                             const std::vector<G4Track*>* /*products*/) override;
 
     void EndProcessing() override {}
     void Clear() {}
+
+  private:
+    std::vector<SpeciesRecord> fSpeciesRecords;
+    G4bool fCollectSpeciesData = false;
+    const G4double kXRange = 100 * angstrom;
+    const G4double kYRange = 100 * angstrom;
+    const G4double kZRange = 150 * angstrom;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

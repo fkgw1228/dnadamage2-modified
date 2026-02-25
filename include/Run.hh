@@ -50,30 +50,41 @@
 
 #include "ScoreSpecies.hh"
 #include "ScoreStrandBreaks.hh"
+#include "TimeStepAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4VPrimitiveScorer;
-class Run : public G4Run
-{
+class Run : public G4Run {
 public:
   Run();
   ~Run() override = default;
-  
-  void RecordEvent(const G4Event*) override;
-  void Merge(const G4Run*) override;
-  
+
+  void RecordEvent(const G4Event *) override;
+  void Merge(const G4Run *) override;
+
   G4double GetSumDose() const { return fSumEne; }
-  G4VPrimitiveScorer* GetPrimitiveScorer() const { return fScorerRun;}
-  G4VPrimitiveScorer* GetSBScorer() const {return fStrandBreakRun;}
-  G4THitsMap<G4double>* GetLET() {return fTotalLET;}
-  
+  G4VPrimitiveScorer *GetPrimitiveScorer() const { return fScorerRun; }
+  G4VPrimitiveScorer *GetSBScorer() const { return fStrandBreakRun; }
+  G4THitsMap<G4double> *GetLET() { return fTotalLET; }
+
+  const std::vector<SpeciesRecord> &GetSpeciesRecords() const {
+    return fSpeciesRecords;
+  }
+  void AddSpeciesRecord(SpeciesRecord record) {
+    fSpeciesRecords.push_back(record);
+  }
+
 private:
   G4double fSumEne = 0;
-  G4VPrimitiveScorer* fScorerRun = nullptr;
-  G4VPrimitiveScorer* fLETScorerRun = nullptr;
-  G4VPrimitiveScorer* fStrandBreakRun = nullptr;
-  G4THitsMap<G4double>* fTotalLET = nullptr;
+  G4VPrimitiveScorer *fScorerRun = nullptr;
+  G4VPrimitiveScorer *fLETScorerRun = nullptr;
+  G4VPrimitiveScorer *fStrandBreakRun = nullptr;
+  G4THitsMap<G4double> *fTotalLET = nullptr;
+  G4int fCollectionIDSpecies = -1;
+  G4int fCollectionIDLET = -1;
+
+  std::vector<SpeciesRecord> fSpeciesRecords;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

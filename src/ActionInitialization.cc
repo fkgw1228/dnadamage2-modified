@@ -43,23 +43,22 @@
 /// \brief Implementation of the ActionInitialization class
 
 #include "ActionInitialization.hh"
+
+#include "G4DNAChemistryManager.hh"
+#include "G4H2O.hh"
+#include "G4MoleculeCounter.hh"
+#include "G4Scheduler.hh"
+
+#include "ITSteppingAction.hh"
+#include "ITTrackingInteractivity.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
 #include "StackingAction.hh"
 #include "TimeStepAction.hh"
 
-#include "G4DNAChemistryManager.hh"
-#include "G4MoleculeCounter.hh"
-#include "G4Scheduler.hh"
-
-#include "G4H2O.hh"
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-ActionInitialization::ActionInitialization()
-        : G4VUserActionInitialization()
-{
-}
+ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
@@ -78,7 +77,8 @@ void ActionInitialization::Build() const
   G4MoleculeCounter::Instance()->DontRegister(G4H2O::Definition());
 
   // sequential mode
-  if(G4Threading::IsMultithreadedApplication() == false) {
+  if (G4Threading::IsMultithreadedApplication() == false)
+  {
     G4DNAChemistryManager::Instance()->ResetCounterWhenRunEnds(false);
   }
 
@@ -86,6 +86,11 @@ void ActionInitialization::Build() const
   SetUserAction(new RunAction());
   SetUserAction(new StackingAction());
   G4Scheduler::Instance()->SetUserAction(new TimeStepAction());
+
+  // Tracking and Stepping actions for chemistry
+  ITTrackingInteractivity* itInteractivity = new ITTrackingInteractivity();
+  itInteractivity->SetUserAction(new ITSteppingAction());
+  G4Scheduler::Instance()->SetInteractivity(itInteractivity);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

@@ -4,36 +4,46 @@
 # Set electron solvation process: "Meesungnoen2002", "Ritchie1994", "Terrisol1990"
 /process/dna/e-SolvationSubType Meesungnoen2002
 
+/process/chem/TimeStepModel IRT
+#/process/chem/TimeStepModel SBS
+#/process/chem/TimeStepModel IRT_syn
+
 # Chemistry Scavenger Cocentrations
 # Units are assumed to be mol/dm3 (M)
-/chem/scavenger/DMSO   5e-4
-/chem/scavenger/Oxygen 0.27e-3
+/chem/scavenger/setDMSOMole   5e-4
+/chem/scavenger/setOxygenMole 0.27e-3
 
 # Register Physics and Chemistries
-/physics/SetPhysics   G4EmDNAPhysics_option2
-/physics/SetChemistry G4EmDNAChemistry_userOption
+/physics/setPhysics   G4EmDNAPhysics_option2
+/physics/setChemistry G4EmDNAChemistry_userOption
 
 # DNA Settings (Before Initialize)
-/det/DNAFile  data/json/nuc-SASA.json
-/det/OffSetFile  data/offsets/offsets.txt
-/det/UseDNAVolumes True
-/det/NbOfDNA 1
-/det/CheckOverlaps False
+/det/setDNAFile  data/json/nuc-SASA.json
+/det/setOffsetFile  data/offsets/offsets.txt
+/det/enableDNAVolumes True
+/det/setNumberOfDNA 1
+/det/checkOverlaps False
 
 # World Size Settings
-/det/WorldSize 1 um
-/det/EnvelopeRadius 0.5 um
+/det/setWorldSize 5 um
+/det/setEnvelopeDiameter 5.0 um
 
 /run/initialize
 
-# Energy setting
-/fpGun/setEnergy 2.5 keV
-/fpGun/setPosition -30. 0. 0. angstrom
-/fpGun/setDirection 1 0 0
+# Irradiation setting (spherical position)
+/fpGun/setIrradiationType spherical
+/fpGun/setEnergy 30 keV
+/fpGun/setSphereRadius 200 angstrom
+
+# Irradiation setting (fixed position)
+#/fpGun/setIrradiationType fixed
+#/fpGun/setEnergy 30 keV
+#/fpGun/setPosition -30. 0. 0. angstrom
+#/fpGun/setDirection 1 0 0
 
 # Number of primaries per event 
 # Correlates with accumulated dose.
-/fpGun/PrimariesPerEvent 1
+/fpGun/setPrimariesPerEvent 1
 
 # Chemistry Scheduler Settings
 #/scheduler/endTime 1 picosecond
@@ -41,10 +51,10 @@
 #/scheduler/endTime 10 nanosecond
 #/scheduler/endTime 100 nanosecond
 #/scheduler/endTime 1 microsecond
-#/scheduler/endTime 10 microsecond
-/scheduler/endTime 100 microsecond
+/scheduler/endTime 10 microsecond
+#/scheduler/endTime 100 microsecond
 #/scheduler/endTime 1 millisecond
-/scorer/species/nOfTimeBins 100
+/scorer/species/setNumberOfTimeBins 100
 
 /scorer/species/addTimeToRecord 10 picosecond
 /scorer/species/addTimeToRecord 100 picosecond
@@ -53,17 +63,22 @@
 /scorer/species/addTimeToRecord 100 nanosecond
 /scorer/species/addTimeToRecord 1 microsecond
 /scorer/species/addTimeToRecord 10 microsecond
-/scorer/species/addTimeToRecord 100 microsecond
+#/scorer/species/addTimeToRecord 100 microsecond
 #/scorer/species/addTimeToRecord 1 millisecond
 
 # GValues: Output Options
-/scorer/species/OutputFile data/species/SpeciesInfo
-/scorer/species/OutputFormat ASCII 
+/scorer/species/setOutputFile data/species/SpeciesInfo
+/scorer/species/setOutputFormat root 
 
 # SB: Output Options
-/scorer/StrandBreak/OutputFile data/strand_breaks/StrandBreakInfo
-/scorer/StrandBreak/OutputFormat ASCII
-/scorer/StrandBreak/BreakEnergy 17.5 eV
+/scorer/StrandBreak/setOutputFile data/strand_breaks/StrandBreakInfo
+/scorer/StrandBreak/setOutputFormat root
+/scorer/StrandBreak/setBreakEnergy 17.5 eV
+
+# Position of Species at Each Timestep
+/speciesPos/setEventNumToRecord 10
+/speciesPos/setOutputFile data/species/SpeciesDist
+/speciesPos/setOutputFormat root
 
 # Verbose Settings
 /tracking/verbose 0

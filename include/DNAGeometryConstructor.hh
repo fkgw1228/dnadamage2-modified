@@ -27,47 +27,68 @@
 // Update: H. Tran (IRSN, France) :20/12/2018
 //         J. Naoki D. Kondo (UCSF, US): 10/10/2021
 //
-/// \file PhysGeoImport.hh
-/// \brief Definition of the plasmid load methods for the geometry
 
-#ifndef DNADAMAGE2_GeoImport_h
-#define DNADAMAGE2_GeoImport_h 1
+#ifndef DNAGEOMETRYCONSTRUCTOR_HH
+#define DNAGEOMETRYCONSTRUCTOR_HH 1
 
-#include <fstream>
-#include <algorithm>
-
-#include "G4String.hh"
-#include "G4ThreeVector.hh"
-#include "G4Orb.hh"
-#include "G4VSolid.hh"
-#include "G4Box.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4SubtractionSolid.hh"
-#include "G4LogicalVolume.hh"
-#include "G4PVPlacement.hh"
-#include "G4NistManager.hh"
+#include "G4Color.hh"
 #include "G4VisAttributes.hh"
-#include <memory>
-#include "G4H2O.hh"
-#include "G4Electron_aq.hh"
+#include "globals.hh"
 
+#include "Ellipsoid.hh"
+#include "Plane.hh"
 #include "DNAStructure.hh"
 
-class G4VPhysicalVolume;
+class G4LogicalVolume;
+class G4VSolid;
+class G4DisplacedSolid;
+class G4SubtractionSolid;
+class G4Material;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class DNAGeometryConstructor
 {
-public:
+  public:
     // Constructor
-    DNAGeometryConstructor() {};
+    DNAGeometryConstructor() = default;
+    DNAGeometryConstructor(G4bool checkOverlaps)
+        : DNAGeometryConstructor() { fCheckOverlaps = checkOverlaps; }
     ~DNAGeometryConstructor() = default;
 
-    G4LogicalVolume* CreateDNAGeometry(DNAStructure dnaStructure, G4bool checkOverlaps);
+    G4LogicalVolume* CreateDNAGeometry(DNAStructure&);
 
-private:
+  
+  private:
+    G4LogicalVolume* CreateVoxelBox(G4ThreeVector voxelSize, G4Material* envelopeWater);
+    G4DisplacedSolid* BuildXYPlane(G4double size);
+    G4VSolid* BuildCompoundSolid(
+              G4String chainId, G4int residueId, G4String compoundName,
+              Ellipsoid ellipsoid, std::vector<Plane> planes,
+              G4DisplacedSolid* xyPlaneSolid);
+    G4VSolid* ApplyPlaneCuts(
+              G4DisplacedSolid* ellipsoidSolid,
+              Ellipsoid ellipsoid,
+              std::vector<Plane> planes,
+              G4String locationName,
+              G4DisplacedSolid* xyPlaneSolid);
+    void PlaceComound(
+              G4LogicalVolume* mother,
+              G4VSolid* solid,
+              G4String chainId, G4int residueId, G4String compoundName,
+              G4Material* compoundWater,
+              G4int copyNumber
+            );
+
     G4String fGeometryName = "Voxel_Straight";
+    G4bool fCheckOverlaps = false;
+    std::map<G4String, G4VisAttributes*> fVisAttrMap
+            = {
+              {"deoxyribose", new G4VisAttributes(G4Color::Red())},
+              {"phosphate",   new G4VisAttributes(G4Color::Yellow())},
+              {"base",        new G4VisAttributes(G4Color::Green())},
+              {"default",     new G4VisAttributes(G4Color::White())}
+              };
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

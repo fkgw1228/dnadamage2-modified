@@ -45,32 +45,28 @@
 #ifndef DNADAMAGE2_DetectorConstruction_h
 #define DNADAMAGE2_DetectorConstruction_h 1
 
-#include <vector>
-#include <map>
-
-#include "G4VUserDetectorConstruction.hh"
-#include "G4UImessenger.hh"
-#include "G4Orb.hh"
-#include "G4MoleculeGun.hh"
+#include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
-#include "G4UIcmdWithADoubleAndUnit.hh"
-#include "G4UIcmdWithABool.hh"
-#include "DNAGeometryConstructor.hh"
-#include "StackingAction.hh"
+#include "G4UImessenger.hh"
+#include "G4VUserDetectorConstruction.hh"
+#include "G4SystemOfUnits.hh"
+#include "globals.hh"
 
 #include "DNAStructure.hh"
-#include "DNA.hh"
+
+#include <map>
+#include <vector>
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class DetectorConstruction : public G4VUserDetectorConstruction,
-                             public G4UImessenger
+class DetectorConstruction : public G4VUserDetectorConstruction, public G4UImessenger
 {
-public:
+  public:
     DetectorConstruction();
     ~DetectorConstruction() override;
     void SetNewValue(G4UIcommand*, G4String) override;
@@ -78,39 +74,33 @@ public:
     G4VPhysicalVolume* Construct() override;
     void ConstructSDandField() override;
 
-    const DNAStructure& GetDnaStructure(G4int index);
-    std::map<G4int, DNAStructure> GetDNAMap() {return fDNAMap;}
+    DNAStructure& GetStructure(G4int);
+    std::map<G4int, DNAStructure> GetStructureMap() { return fStructureMap; }
 
-    // void SetStacking(StackingAction* stack) {fpStacking = stack;}
-    // StackingAction* GetStacking() {return fpStacking;}
+  private:
+    void ReadOffsetFile(G4String);
+    void AddStructureToMap(G4int, DNAStructure&, G4ThreeVector);
 
-private:
-    void ReadOffsetFile(G4String fileName);
-    void AddDNAToMap(G4int dnaId, DNAStructure& dnaStructure, G4ThreeVector offset);
-    
     // UI commands
     G4UIdirectory* fpDetDir = nullptr;
-    G4UIcmdWithAString* fpOffSetFileUI = nullptr;
-    G4UIcmdWithAString* fpDNAFileUI  = nullptr;
-    G4UIcmdWithAnInteger* fpDNANbUI = nullptr;
+    G4UIcmdWithAString* fpOffsetFileUI = nullptr;
+    G4UIcmdWithAString* fpDNAFileUI = nullptr;
+    G4UIcmdWithAnInteger* fpNumberOfDNAUI = nullptr;
     G4UIcmdWithADoubleAndUnit* fpWorldSizeUI = nullptr;
-    G4UIcmdWithADoubleAndUnit* fpEnvelopeRadiusUI = nullptr;
-    G4UIcmdWithABool* fpUseDNAUI = nullptr;
+    G4UIcmdWithADoubleAndUnit* fpEnvelopeDiameterUI = nullptr;
+    G4UIcmdWithABool* fpEnableDNAVolumesUI = nullptr;
     G4UIcmdWithABool* fpCheckOverlapsUI = nullptr;
 
     // Geometry parameters
     G4double fWorldSize = 1 * um;
-    G4double fEnvelopeRadius = 0.5 * um;
+    G4double fEnvelopeDiameter = 0.5 * um;
 
-    G4int fNbOfDNA = 0;
-    G4String fDNAFile = "";
-    G4bool fUseDNAVolumes = false;
-    std::vector<G4ThreeVector> fOffsets;
-    G4bool fCheckOverlaps = false;
-
-    std::map<G4int, DNAStructure> fDNAMap;     // Placed DNA structures
-
-    // StackingAction* fpStacking = nullptr;
+    std::vector<G4ThreeVector> fOffsets;      // Offsets for DNA placements
+    G4String fDNAFile = "";                   // DNA structure file name
+    G4int fNumberOfDNA = 0;                   // Number of DNA structures to be placed
+    G4bool fEnableDNAVolumes = false;         // Flag to use DNA volumes for simulation
+    G4bool fCheckOverlaps = false;            // Flag to check overlaps during geometry construction
+    std::map<G4int, DNAStructure> fStructureMap; // Placed DNA structures keyed by their IDs
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

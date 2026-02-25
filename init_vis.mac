@@ -5,23 +5,23 @@
 /process/dna/e-SolvationSubType Ritchie1994
 
 # Chemistry Scavenger Settings
-/chem/scavenger/DMSO   5e-4
-/chem/scavenger/Oxygen 0.27e-3
+/chem/scavenger/setDMSOMole   5e-4
+/chem/scavenger/setOxygenMole 0.27e-3
 
 # Register Physics and Chemistries
-/physics/SetPhysics   G4EmDNAPhysics_option4
-/physics/SetChemistry G4EmDNAChemistry_userOption
+/physics/setPhysics   G4EmDNAPhysics_option4
+/physics/setChemistry G4EmDNAChemistry_userOption
 
 # DNA Settings (Befor Initialize)
-/det/DNAFile  data/json/nuc-SASA.json
-/det/OffSetFile  data/offsets/offsets.txt
-/det/UseDNAVolumes True
-/det/NbOfDNA 1
-/det/CheckOverlaps False
+/det/setDNAFile  data/json/nuc-SASA.json
+/det/setOffsetFile  data/offsets/offsets.txt
+/det/enableDNAVolumes True
+/det/setNumberOfDNA 1
+/det/checkOverlaps False
 
 # World Size Settings
-/det/WorldSize 1 um
-/det/EnvelopeRadius 0.5 um
+/det/setWorldSize 1 um
+/det/setEnvelopeDiameter 1.0 um
 
 /run/initialize
 
@@ -30,22 +30,22 @@
 
 # Number of primaries per event 
 # Correlates with Dose per Event.
-/fpGun/PrimariesPerEvent 1
+/fpGun/setPrimariesPerEvent 1
 
 # Chemistry Scheduler Settings
 /scheduler/endTime 100 microsecond
-/scorer/species/nOfTimeBins 100
+/scorer/species/setNumberOfTimeBins 100
 /scorer/species/addTimeToRecord 1 microsecond
 /scorer/species/addTimeToRecord 10 microsecond
 
 # GValues: Output Options
-/scorer/species/OutputFile data/species/SpeciesInfo
-/scorer/species/OutputFormat ASCII 
+/scorer/species/setOutputFile data/species/SpeciesInfo
+/scorer/species/setOutputFormat root 
 
 # SB: Output Options
-/scorer/StrandBreak/OutputFile data/strand_breaksStrandBreakInfo
-/scorer/StrandBreak/OutputFormat ASCII
-/scorer/StrandBreak/BreakEnergy 17.5 eV
+/scorer/StrandBreak/setOutputFile data/strand_breaks/StrandBreakInfo
+/scorer/StrandBreak/setOutputFormat root
+/scorer/StrandBreak/setBreakEnergy 17.5 eV
 
 # Verbose Settings
 /tracking/verbose 0

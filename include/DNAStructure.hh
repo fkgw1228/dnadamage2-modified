@@ -1,53 +1,58 @@
 #ifndef DNASTRUCTURE_HH
 #define DNASTRUCTURE_HH
 
-#include <vector>
-#include <map>
-#include "DNA.hh"
 #include "Ellipsoid.hh"
+#include "Model.hh"
 #include "Plane.hh"
+
+#include <map>
+#include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-struct DNALocationKey {
+struct DNAComponentKey
+{
     G4String chainId;
-    G4int nucleotideId;
+    G4int residueId;
     G4String compoundName;
 
     // Define less-than operator for use in std::map
-    bool operator<(const DNALocationKey& other) const {
-        if (chainId != other.chainId)             return chainId < other.chainId;
-        if (nucleotideId != other.nucleotideId)   return nucleotideId < other.nucleotideId;
-        return compoundName < other.compoundName;
+    bool operator<(const DNAComponentKey& other) const
+    {
+      if (chainId != other.chainId) return chainId < other.chainId;
+      if (residueId != other.residueId) return residueId < other.residueId;
+      return compoundName < other.compoundName;
     }
 };
 
-typedef std::map<DNALocationKey, Ellipsoid> DNAEllipsoidMap;
-typedef std::map<DNALocationKey, std::vector<Plane>> DNAPlanesMap;
+typedef std::map<DNAComponentKey, Ellipsoid> DNAEllipsoidMap;
+typedef std::map<DNAComponentKey, std::vector<Plane>> DNAPlanesMap;
 
-class DNAStructure {
-public:
+class DNAStructure
+{
+  public:
     // Constructor
     DNAStructure() {}
-    DNAStructure(DNA dna) : fDna(dna) {}
+    DNAStructure(Model model) : fModel(model) {}
 
     // Getter
-    const DNA& GetDNA() const { return fDna; }
-    Ellipsoid GetEllipsoid(G4String chainId, G4int nucleotideId, G4String compoundName) const;
-    std::vector<Plane> GetPlanes(G4String chainId, G4int nucleotideId, G4String compoundName) const;
+    Model& GetModel() { return fModel; }
+    Ellipsoid GetEllipsoid(G4String chainId, G4int residueId, G4String compoundName);
+    std::vector<Plane> GetPlanes(G4String chainId, G4int residueId, G4String compoundName);
 
     // Setter
-    void SetDNA(DNA dna) { fDna = dna; }
-    void SetEllipsoid(G4String chainId, G4int nucleotideId, G4String compoundName, Ellipsoid ellipsoid);
-    void AddPlane(G4String chainId, G4int nucleotideId, G4String compoundName, Plane plane);
-    void SetPlanes(G4String chainId, G4int nucleotideId, G4String compoundName, std::vector<Plane> planes);
+    void SetModel(Model model) { fModel = model; }
+    void SetEllipsoid(G4String chainId, G4int residueId, G4String compoundName, Ellipsoid ellipsoid);
+    void AddPlane(G4String chainId, G4int residueId, G4String compoundName, Plane plane);
+    void SetPlanes(G4String chainId, G4int residueId, G4String compoundName,
+                   std::vector<Plane> planes);
 
-private:
-    DNA fDna;
+  private:
+    Model fModel;
     DNAEllipsoidMap fEllipsoidMap;
     DNAPlanesMap fPlanesMap;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-# endif
+#endif

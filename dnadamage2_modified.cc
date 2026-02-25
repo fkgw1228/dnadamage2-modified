@@ -41,16 +41,17 @@
 /// \file dnadamage2.cc
 /// \brief DnaDamage2 example
 
+#include "G4DNAChemistryManager.hh"
+#include "G4RunManagerFactory.hh"
+#include "G4UIExecutive.hh"
+#include "G4UImanager.hh"
+#include "G4VisExecutive.hh"
+
+#include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
-#include "ActionInitialization.hh"
 
-#include "G4RunManagerFactory.hh"
-
-#include "G4DNAChemistryManager.hh"
-#include "G4UImanager.hh"
-#include "G4UIExecutive.hh"
-#include "G4VisExecutive.hh"
+#include <chrono>
 
 /*
  * WARNING : Geant4 was initially not intended for this kind of application
@@ -63,38 +64,43 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-//G4int fSeed = 1234;
+// G4int fSeed = 1234;
 G4int fSeed = 12345;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
 int main(int argc, char** argv)
 {
+  std::chrono::high_resolution_clock::time_point tStart
+    = std::chrono::high_resolution_clock::now();
+
   G4UIExecutive* ui = 0;
-  if ( argc == 1 ) {
+  if (argc == 1)
+  {
     ui = new G4UIExecutive(argc, argv);
   }
 
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
 
-  auto* runManager= G4RunManagerFactory::CreateRunManager();
+  auto* runManager = G4RunManagerFactory::CreateRunManager();
 
   // Set mandatory initialization classes
-  DetectorConstruction* fpDetector  = new DetectorConstruction();
+  DetectorConstruction* fpDetector = new DetectorConstruction();
   ActionInitialization* fpActionIni = new ActionInitialization();
 
   runManager->SetUserInitialization(new PhysicsList());
   runManager->SetUserInitialization(fpDetector);
   runManager->SetUserInitialization(fpActionIni);
 
-  //get the pointer to the User Interface manager
-  G4UImanager* UI  = G4UImanager::GetUIpointer();
+  // get the pointer to the User Interface manager
+  G4UImanager* UI = G4UImanager::GetUIpointer();
   G4VisManager* vM = new G4VisExecutive;
 
   G4String fileName = "";
   G4String command = "/control/execute ";
 
-  if (argc == 1) {
+  if (argc == 1)
+  {
     vM->Initialize();
     G4Random::setTheSeed(fSeed);
     UI->ApplyCommand("/control/execute init_vis.mac");
@@ -102,20 +108,21 @@ int main(int argc, char** argv)
     delete ui;
   }
 
-  else if (argc == 2) // batch mode
+  else if (argc == 2)  // batch mode
   {
     fileName = argv[1];
   }
 
-  else if (argc > 2) 
+  else if (argc > 2)
   {
     fileName = argv[1];
     fSeed = atoi(argv[2]);
   }
 
-  if (argc > 1) {
+  if (argc > 1)
+  {
     G4Random::setTheSeed(fSeed);
-    UI->ApplyCommand(command+fileName);
+    UI->ApplyCommand(command + fileName);
   }
 
   // Job termination
@@ -124,6 +131,11 @@ int main(int argc, char** argv)
   // in the main() program !
   delete runManager;
   delete vM;
+
+  std::chrono::high_resolution_clock::time_point tEnd = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> time_span = tEnd - tStart;
+  G4cout << "Total execution time: " << time_span.count() << " seconds." << G4endl;
+
   return 0;
 }
 
