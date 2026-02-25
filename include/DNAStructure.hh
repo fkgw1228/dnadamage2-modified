@@ -1,5 +1,5 @@
-#ifndef STRUCTURE_HH
-#define STRUCTURE_HH
+#ifndef DNASTRUCTURE_HH
+#define DNASTRUCTURE_HH
 
 #include "Ellipsoid.hh"
 #include "Model.hh"
@@ -28,12 +28,12 @@ struct DNAComponentKey
 typedef std::map<DNAComponentKey, Ellipsoid> DNAEllipsoidMap;
 typedef std::map<DNAComponentKey, std::vector<Plane>> DNAPlanesMap;
 
-class Structure
+class DNAStructure
 {
   public:
     // Constructor
-    Structure() {}
-    Structure(Model model) : fModel(model) {}
+    DNAStructure() {}
+    DNAStructure(Model model) : fModel(model) {}
 
     // Getter
     Model& GetModel() { return fModel; }

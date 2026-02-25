@@ -48,7 +48,7 @@
 
 #include "Model.hh"
 #include "MoleculeInserter.hh"
-#include "Structure.hh"
+#include "DNAStructure.hh"
 #include "TimeStepAction.hh"
 #include <G4EventManager.hh>
 #include <G4SystemOfUnits.hh>
@@ -257,7 +257,7 @@ G4String ScoreStrandBreaks::GetApproximateAtomName(G4int modelId,
                                                    G4String compound_name,
                                                    G4ThreeVector position)
 {
-  Structure structure = fpDetector->GetStructure(modelId);
+  DNAStructure structure = fpDetector->GetStructure(modelId);
   Model model = structure.GetModel();
   std::vector<Atom> atoms =
     model.GetChain(chainId).GetResidue(residueId).GetCompound(compound_name).GetAtoms();

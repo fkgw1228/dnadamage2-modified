@@ -5,7 +5,7 @@
 #include "G4Types.hh"
 
 #include "Model.hh"
-#include "Structure.hh"
+#include "DNAStructure.hh"
 
 #include <utility>
 
@@ -16,7 +16,7 @@ class DNAHandler
 {
   public:
     // 　Move the entire DNA structure by a given offset
-    static Structure GetMovedStructure(G4int, Structure&, G4ThreeVector);
+    static DNAStructure GetMovedStructure(G4int, DNAStructure&, G4ThreeVector);
 
     // 　Get the center coordinates of the DNA
     static G4ThreeVector GetCenter(Model& model);
@@ -25,7 +25,7 @@ class DNAHandler
     static std::pair<G4ThreeVector, G4ThreeVector> GetRange(Model& model);
 
     // 　Print the information of the DNA structure to the console
-    static void Print(Structure& structure);
+    static void Print(DNAStructure& structure);
 
   private:
     DNAHandler() = delete;  // Prevent instantiation of this class

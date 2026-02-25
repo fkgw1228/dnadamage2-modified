@@ -1,8 +1,8 @@
-#include "Structure.hh"
+#include "DNAStructure.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Ellipsoid Structure::GetEllipsoid(G4String chainId, G4int residueId, G4String compoundName)
+Ellipsoid DNAStructure::GetEllipsoid(G4String chainId, G4int residueId, G4String compoundName)
 {
   if (fEllipsoidMap.find(DNAComponentKey{chainId, residueId, compoundName}) == fEllipsoidMap.end())
   {
@@ -14,7 +14,7 @@ Ellipsoid Structure::GetEllipsoid(G4String chainId, G4int residueId, G4String co
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-std::vector<Plane> Structure::GetPlanes(G4String chainId, G4int residueId,
+std::vector<Plane> DNAStructure::GetPlanes(G4String chainId, G4int residueId,
                                         G4String compoundName)
 {
   if (fPlanesMap.find(DNAComponentKey{chainId, residueId, compoundName}) == fPlanesMap.end())
@@ -25,7 +25,7 @@ std::vector<Plane> Structure::GetPlanes(G4String chainId, G4int residueId,
   return fPlanesMap.at(DNAComponentKey{chainId, residueId, compoundName});
 }
 
-void Structure::SetEllipsoid(G4String chainId, G4int residueId, G4String compoundName,
+void DNAStructure::SetEllipsoid(G4String chainId, G4int residueId, G4String compoundName,
                              Ellipsoid ellipsoid)
 {
   fEllipsoidMap[DNAComponentKey{chainId, residueId, compoundName}] = ellipsoid;
@@ -33,14 +33,14 @@ void Structure::SetEllipsoid(G4String chainId, G4int residueId, G4String compoun
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void Structure::AddPlane(G4String chainId, G4int residueId, G4String compoundName, Plane plane)
+void DNAStructure::AddPlane(G4String chainId, G4int residueId, G4String compoundName, Plane plane)
 {
   fPlanesMap[DNAComponentKey{chainId, residueId, compoundName}].push_back(plane);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void Structure::SetPlanes(G4String chainId, G4int residueId, G4String compoundName,
+void DNAStructure::SetPlanes(G4String chainId, G4int residueId, G4String compoundName,
                           std::vector<Plane> planes)
 {
   fPlanesMap[DNAComponentKey{chainId, residueId, compoundName}] = planes;

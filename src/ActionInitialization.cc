@@ -90,6 +90,7 @@ void ActionInitialization::Build() const
   // Tracking and Stepping actions for chemistry
   ITTrackingInteractivity* itInteractivity = new ITTrackingInteractivity();
   itInteractivity->SetUserAction(new ITSteppingAction());
+  G4Scheduler::Instance()->SetInteractivity(itInteractivity);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

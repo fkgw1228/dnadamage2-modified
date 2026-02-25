@@ -28,8 +28,8 @@
 //         J. Naoki D. Kondo (UCSF, US): 10/10/2021
 //
 
-#ifndef DNADAMAGE2_GeoImport_h
-#define DNADAMAGE2_GeoImport_h 1
+#ifndef DNAGEOMETRYCONSTRUCTOR_HH
+#define DNAGEOMETRYCONSTRUCTOR_HH 1
 
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
@@ -37,7 +37,7 @@
 
 #include "Ellipsoid.hh"
 #include "Plane.hh"
-#include "Structure.hh"
+#include "DNAStructure.hh"
 
 class G4LogicalVolume;
 class G4VSolid;
@@ -56,7 +56,7 @@ class DNAGeometryConstructor
         : DNAGeometryConstructor() { fCheckOverlaps = checkOverlaps; }
     ~DNAGeometryConstructor() = default;
 
-    G4LogicalVolume* CreateDNAGeometry(Structure&);
+    G4LogicalVolume* CreateDNAGeometry(DNAStructure&);
 
   
   private:

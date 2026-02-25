@@ -51,7 +51,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(Structure& structure)
+G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(DNAStructure& structure)
 {
   // Materials
   // * Material for the compound volumes has different name for chemistry control (see
@@ -226,7 +226,7 @@ void DNAGeometryConstructor::PlaceComound(
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-// G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(Structure& structure,
+// G4LogicalVolume* DNAGeometryConstructor::CreateDNAGeometry(DNAStructure& structure,
 //                                                            G4double voxelSize)
 // {
 //   // Materials

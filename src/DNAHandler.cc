@@ -7,13 +7,13 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Structure DNAHandler::GetMovedStructure(G4int structureId,
-                                        Structure& structure,
+DNAStructure DNAHandler::GetMovedStructure(G4int structureId,
+                                        DNAStructure& structure,
                                         G4ThreeVector offset)
 {
   /* Move the entire DNA structure by a given offset */
   Model model = structure.GetModel();
-  Structure movedDnaStructure;
+  DNAStructure movedDnaStructure;
 
   Model movedModel = Model(structureId);
 
@@ -112,7 +112,7 @@ G4ThreeVector DNAHandler::GetCenter(Model& dna)
   return (minPos + maxPos) * 0.5;
 }
 
-void DNAHandler::Print(Structure& structure)
+void DNAHandler::Print(DNAStructure& structure)
 {
   // dna range calculation
   Model model = structure.GetModel();

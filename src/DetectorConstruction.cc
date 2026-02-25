@@ -199,7 +199,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   // DNA geometry construction
   auto start = std::chrono::high_resolution_clock::now();
   DNAFileReader reader = DNAFileReader(fDNAFile);
-  Structure structure = reader.ReadDNAFile(1);
+  DNAStructure structure = reader.ReadDNAFile(1);
   
   // DNAHandler::Print(structure);
 
@@ -294,19 +294,19 @@ void DetectorConstruction::ReadOffsetFile(G4String fileName) {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
 void DetectorConstruction::AddStructureToMap(G4int structureId,
-                                             Structure &structure,
+                                             DNAStructure &structure,
                                              G4ThreeVector offset) {
   // Move DNA structure to the specified offset position and add to the map
-  Structure movedStructure =
+  DNAStructure movedStructure =
       DNAHandler::GetMovedStructure(structureId, structure, offset);
   fStructureMap[structureId] = movedStructure;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-Structure& DetectorConstruction::GetStructure(G4int structureId) {
+DNAStructure& DetectorConstruction::GetStructure(G4int structureId) {
   if (fStructureMap.find(structureId) == fStructureMap.end()) {
-    G4cout << "DNA Structure with ID " << structureId << " not found!"
+    G4cout << "DNA DNAStructure with ID " << structureId << " not found!"
            << G4endl;
     exit(1);
   }

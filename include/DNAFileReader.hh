@@ -10,7 +10,7 @@
 #include "Model.hh"
 #include "Plane.hh"
 #include "Residue.hh"
-#include "Structure.hh"
+#include "DNAStructure.hh"
 #include <nlohmann/json.hpp>
 
 #include <string>
@@ -29,7 +29,7 @@ class DNAFileReader
     // Setter
     void SetFileName(G4String fileName) { this->fFileName = fileName; }
 
-    Structure ReadDNAFile(G4int modelId);
+    DNAStructure ReadDNAFile(G4int modelId);
 
   private:
     Model GenerateModel(G4int modelId, const json& dnaInfo);
@@ -37,7 +37,7 @@ class DNAFileReader
     Residue GenerateResidue(G4int residueId, const json& residueInfo);
     Compound GenerateCompound(G4String compoundName, const json& compoundInfo);
     Atom GenerateAtom(const json& atomInfo);
-    Structure GenerateStructure(const json& dnaInfo);
+    DNAStructure GenerateStructure(const json& dnaInfo);
     Ellipsoid GenerateEllipsoid(const json& ellipsoidInfo);
     Plane GeneratePlane(const json& planeInfo);
 

@@ -10,9 +10,9 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Structure DNAFileReader::ReadDNAFile(G4int modelId)
+DNAStructure DNAFileReader::ReadDNAFile(G4int modelId)
 {
-  /* Read a json file and create a Structure object */
+  /* Read a json file and create a DNAStructure object */
   std::ifstream file(this->fFileName);
   if (!file.is_open())
   {
@@ -65,7 +65,7 @@ Structure DNAFileReader::ReadDNAFile(G4int modelId)
   // DNA molecule construction
   Model model = GenerateModel(modelId, j);
   // ellipsoid and planes construction
-  Structure structure = GenerateStructure(j);
+  DNAStructure structure = GenerateStructure(j);
   structure.SetModel(model);
 
   G4ThreeVector dnaCenter = DNAHandler::GetCenter(model);
@@ -154,11 +154,11 @@ Atom DNAFileReader::GenerateAtom(const json& atomInfo)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Structure DNAFileReader::GenerateStructure(const json& dnaInfo)
+DNAStructure DNAFileReader::GenerateStructure(const json& dnaInfo)
 {
   /* Parse DNA geometry information such as the oval shape of compounds
      and separating planes from JSON */
-  Structure structure = Structure();
+  DNAStructure structure = DNAStructure();
   auto chains = dnaInfo["chains"];
   for (const auto& chainInfo : chains)
   {

@@ -54,7 +54,7 @@
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
 
-#include "Structure.hh"
+#include "DNAStructure.hh"
 
 #include <map>
 #include <vector>
@@ -74,12 +74,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction, public G4UImess
     G4VPhysicalVolume* Construct() override;
     void ConstructSDandField() override;
 
-    Structure& GetStructure(G4int);
-    std::map<G4int, Structure> GetStructureMap() { return fStructureMap; }
+    DNAStructure& GetStructure(G4int);
+    std::map<G4int, DNAStructure> GetStructureMap() { return fStructureMap; }
 
   private:
     void ReadOffsetFile(G4String);
-    void AddStructureToMap(G4int, Structure&, G4ThreeVector);
+    void AddStructureToMap(G4int, DNAStructure&, G4ThreeVector);
 
     // UI commands
     G4UIdirectory* fpDetDir = nullptr;
@@ -100,7 +100,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction, public G4UImess
     G4int fNumberOfDNA = 0;                   // Number of DNA structures to be placed
     G4bool fEnableDNAVolumes = false;         // Flag to use DNA volumes for simulation
     G4bool fCheckOverlaps = false;            // Flag to check overlaps during geometry construction
-    std::map<G4int, Structure> fStructureMap; // Placed DNA structures keyed by their IDs
+    std::map<G4int, DNAStructure> fStructureMap; // Placed DNA structures keyed by their IDs
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
