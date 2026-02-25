@@ -45,6 +45,7 @@
 #include "DetectorConstruction.hh"
 
 #include "G4Box.hh"
+#include "G4Orb.hh"
 #include "G4Ellipsoid.hh"
 #include "G4GeometryManager.hh"
 #include "G4IntersectionSolid.hh"
@@ -63,6 +64,7 @@
 #include "G4VPrimitiveScorer.hh"
 #include "G4VisAttributes.hh"
 
+#include "DNAGeometryConstructor.hh"
 #include "DNAFileReader.hh"
 #include "DNAHandler.hh"
 #include "ScoreLET.hh"
