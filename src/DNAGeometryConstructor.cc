@@ -1,3 +1,4 @@
+//
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -22,11 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// Authors: J. Naoki D. Kondo (UCSF, US) : 10/10/2021
-//          J. Ramos-Mendez and B. Faddegon (UCSF, US)
+// This code is derived from the dnadamage2 example.
+// dnadamage2 example authors: J. Naoki D. Kondo (UCSF, US),
+//                             J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
-/// \file DNAGeometryConstructor.cc
-/// \brief Implementation of the plasmid load methods for the geometry
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #include "DNAGeometryConstructor.hh"
 

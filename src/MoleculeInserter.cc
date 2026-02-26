@@ -23,14 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// This code is derived from the dnadamage2 example.
+// dnadamage2 example authors: J. Naoki D. Kondo (UCSF, US),
+//                             J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
-// MoleculeInserter.cc
-//
-// Authors: J. Naoki D. Kondo (UCSF, US)
-//          J. Ramos-Mendez and B. Faddegon (UCSF, US)
-//
-/// \file MoleculeInserter.cc
-/// \brief Implementation of the DNA chemical species inserter for IRT
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #include "MoleculeInserter.hh"
 

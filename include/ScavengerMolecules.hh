@@ -23,24 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// In order for Geant4-DNA to be maintained and still open-source,
-// article citations are crucial.
-// If you use Geant4-DNA chemistry and you publish papers about your software,
-// in addition to the general paper on Geant4-DNA:
+// This code is derived from the dnadamage2 example.
+// dnadamage2 example authors: J. Naoki D. Kondo (UCSF, US),
+//                             J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
-// Int. J. Model. Simul. Sci. Comput. 1 (2010) 157–178
-//
-// Authors: J. Naoki D. Kondo (UCSF, US)
-//          J. Ramos-Mendez and B. Faddegon (UCSF, US)
-//
-// we would be very happy if you could please also cite the following
-// reference papers on chemistry:
-//
-// J. Comput. Phys. 274 (2014) 841-882
-// Prog. Nucl. Sci. Tec. 2 (2011) 503-508
-//
-/// \file ScavengerMolecules.hh
-/// \brief Definition of the Background Scavenber chemical species
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #ifndef DNADAMAGE2_ScavengerMolecules_h
 #define DNADAMAGE2_ScavengerMolecules_h 1

@@ -23,21 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// This example is provided by the Geant4-DNA collaboration
-// dnadamage3 example is derived from the chem6 example
-// chem6 example authors: W. G. Shin and S. Incerti (CENBG, France)
+// This code is derived from the dnadamage2 example.
+// dnadamage2 example authors: J. Naoki D. Kondo (UCSF, US),
+//                             J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
-// Any report or published results obtained using the Geant4-DNA software
-// shall cite the following Geant4-DNA collaboration publication:
-// Med. Phys. 37 (2010) 4692-4708
-// J. Comput. Phys. 274 (2014) 841-882
-// The Geant4-DNA web site is available at http://geant4-dna.org
-//
-// Authors: J. Naoki D. Kondo (UCSF, US)
-//          J. Ramos-Mendez and B. Faddegon (UCSF, US)
-//
-/// \file ScoreStrandBreaks.hh
-/// \brief Definition of the ScoreStrandBreaks class
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #ifndef DNADAMAGE2_ScoreSB_h
 #define DNADAMAGE2_ScoreSB_h 1

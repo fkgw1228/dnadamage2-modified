@@ -16,20 +16,15 @@
 // * for the full disclaimer and the limitation of liability.         *
 // *                                                                  *
 // * This  code  implementation is the result of  the  scientific and *
-// * tecH2aical work of the GEANT4 collaboration.                      *
+// * technical work of the GEANT4 collaboration.                      *
 // * By using,  copying,  modifying or  distributing the software (or *
 // * any work based  on the software)  you  agree  to acknowledge its *
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-// Authors: J. Naoki D. Kondo (UCSF, US)
-//          J. Ramos-Mendez and B. Faddegon (UCSF, US)
-//
-//
-/// \file PlasmidMolecules.cc
-/// \brief Implementation of the additional Plasmid DNA molecules
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #include "DNAMolecules.hh"
 

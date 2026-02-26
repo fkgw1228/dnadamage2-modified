@@ -23,12 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// This code is derived from the dnadamage2 example.
+// dnadamage2 example authors: J. Naoki D. Kondo (UCSF, US),
+//                             J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
-// Authors: J. Naoki D. Kondo (UCSF, US)
-//          J. Ramos-Mendez and B. Faddegon (UCSF, US)
-//
-/// \file ScavengerMolecules.cc
-/// \brief Implementation of the Background Scavenber chemical species
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #include "ScavengerMolecules.hh"
 

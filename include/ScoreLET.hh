@@ -23,26 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// This example is provided by the Geant4-DNA collaboration
-// chem6 example is derived from chem4 and chem5 examples
+// This code is derived from the dnadamage2 example.
+// dnadamage2 example authors: J. Naoki D. Kondo (UCSF, US),
+//                             J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
-// Any report or published results obtained using the Geant4-DNA software
-// shall cite the following Geant4-DNA collaboration publication:
-// J. Appl. Phys. 125 (2019) 104301
-// Med. Phys. 45 (2018) e722-e739
-// J. Comput. Phys. 274 (2014) 841-882
-// Med. Phys. 37 (2010) 4692-4708
-// Int. J. Model. Simul. Sci. Comput. 1 (2010) 157-178
-// The Geant4-DNA web site is available at http://geant4-dna.org
-//
-// Authors: J. Naoki D. Kondo (UCSF, US)
-//          J. Ramos-Mendez and B. Faddegon (UCSF, US)
-//          W. G. Shin and S. Incerti (CENBG, France)
-//
-// $Id$
-//
-/// \file ScoreLET.hh
-/// \brief Definition of the ScoreLET class
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #ifndef DNADAMAGE2_ScoreLET_h
 #define DNADAMAGE2_ScoreLET_h 1

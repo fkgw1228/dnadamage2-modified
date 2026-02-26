@@ -23,29 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// This example is provided by the Geant4-DNA collaboration
-// dnadamage3 example is derived from the chem6 example
-// chem6 example authors: W. G. Shin and S. Incerti (CENBG, France)
+// This code is derived from the dnadamage2 example.
+// dnadamage2 example authors: J. Naoki D. Kondo (UCSF, US),
+//                             J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
-// Any report or published results obtained using the Geant4-DNA software
-// shall cite the following Geant4-DNA collaboration publication:
-// J. Appl. Phys. 125 (2019) 104301
-// Med. Phys. 45 (2018) e722-e739
-// J. Comput. Phys. 274 (2014) 841-882
-// Med. Phys. 37 (2010) 4692-4708
-// Int. J. Model. Simul. Sci. Comput. 1 (2010) 157-178
-// The Geant4-DNA web site is available at http://geant4-dna.org
-//
-//
-/// \file ScoreSpecies.hh
-/// \brief Definition of the ScoreSpecies class
-// Description:
-//   This is a primitive scorer class for scoring the radiolitic species
-// produced after irradiation in a water volume
-//
-// Created: 2015-10-27  by M. Karamitros,
-// modified: 2016-03-16 by P. Piersimoni
-// modified: 2022-01-2022 by J. Naoki D. Kondo
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #ifndef DNADAMAGE2_ScoreSpecies_h
 #define DNADAMAGE2_ScoreSpecies_h 1
