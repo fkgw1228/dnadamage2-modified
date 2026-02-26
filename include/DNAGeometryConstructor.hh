@@ -23,10 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// Authors: S. Meylan and C. Villagrasa (IRSN, France)
-// Update: H. Tran (IRSN, France) :20/12/2018
-//         J. Naoki D. Kondo (UCSF, US): 10/10/2021
+// This code is derived from the dnadamage2 example.
+// dnadamage2 example authors: J. Naoki D. Kondo (UCSF, US),
+//                             J. Ramos-Mendez and B. Faddegon (UCSF, US)
 //
+// Original license: Geant4 Software License (see GEANT4_LICENSE).
+// Copyright (C) 2026 Shun Fukagawa, Tsukasa Aso
 
 #ifndef DNAGEOMETRYCONSTRUCTOR_HH
 #define DNAGEOMETRYCONSTRUCTOR_HH 1
