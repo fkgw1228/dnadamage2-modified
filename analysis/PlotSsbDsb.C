@@ -32,7 +32,7 @@ void PlotSsbDsb(TString filename){
     canvas->SetLogy();  // Set y-axis to logarithmic scale
     //canvas->SetGrid();
 
-    auto gr0 = new TGraphErrors(filename, "%lg %lg %lg %lg", ",");
+    auto gr0 = new TGraphErrors(filename, "%lg %lg %lg %lg", " ");
     gr0->SetMarkerStyle(8);               // Circle
     gr0->SetMarkerColor(kBlue-3);         // Blue
     gr0->SetMarkerSize(1.5);

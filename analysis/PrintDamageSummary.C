@@ -301,8 +301,8 @@ void OutputResultsToFile(const std::vector<DamageAnalyzer>& analyzers, const std
     }
 
     for (const auto& analyzer : analyzers) {
-        outputFile << analyzer.GetLETMean() << " " << analyzer.GetLETStdDev() << " "
-                   << analyzer.GetSSBToDSBRatio() << " " << 0 << "\n";
+        outputFile << analyzer.GetLETMean() << " " << analyzer.GetSSBToDSBRatio() << " "
+                   << analyzer.GetLETStdDev() << " " << 0 << "\n";
     }
 
     outputFile.close();
