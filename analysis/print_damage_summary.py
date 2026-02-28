@@ -270,7 +270,7 @@ def output_results_to_file(analyzers: List[DamageAnalyzer], output_file_name: st
     try:
         with open(output_file_name, 'w') as f:
             for analyzer in analyzers:
-                f.write(f"{analyzer.get_let_mean()} {analyzer.get_let_std_dev()} {analyzer.get_ssb_to_dsb_ratio()} 0\n")
+                f.write(f"{analyzer.get_let_mean()} {analyzer.get_ssb_to_dsb_ratio()} {analyzer.get_let_std_dev()} 0\n")
     except Exception as e:
         print(f"Could not open output file {output_file_name}: {e}", file=sys.stderr)
 
