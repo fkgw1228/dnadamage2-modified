@@ -1201,6 +1201,10 @@ void G4EmDNAChemistryUserOption::ConstructTimeStepModel(G4DNAMolecularReactionTa
   {
     RegisterTimeStepModel(new G4DNAIndependentReactionTimeModel(), 0);
   }
+  else
+  {
+    RegisterTimeStepModel(new G4DNAMolecularIRTModel(), 0);
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
