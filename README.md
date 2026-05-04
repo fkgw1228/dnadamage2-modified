@@ -57,7 +57,7 @@ cmake ..
 make
 ```
 
-# Usage
+## Usage
 Users can view the DNA structure model by runding:
 ```
 ./dnadamage2_modified
@@ -69,3 +69,11 @@ To run the application with a macro file, use:
 ./dnadamage2_modified dnadamage2.mac
 ```
 A radom seed can be changed by providing a second argument when running the program.
+
+## Efficiency Tips
+The Current geometry is hierarchally defined as follows
+- World: the simulation world volume (box)
+- Envelope: a volume used for mesuring LET and chemical species yields, and for placing hydrogen atoms in the 'StrandBreakScorer' (orb)
+- VoxelStraight: a volume used to contain and replicate the DNA model (box)
+At present, the sensitive detector (SD) is attached to **all logical volumes** to score quantities described above. However, this approach can lead to significant computational overhead as the system size increases.
+To eveluate DNA damage more efficiently, it is sufficient to attach the SD only to the logical volumes of the DNA model, excluding the volumes listed above. This can be implemented in `DetectorConstruction::ConstructSDAndField()`. Such a modification can substantially improve computational efficiency (speed-up greater than x10!).
